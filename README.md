@@ -7,7 +7,7 @@ import neatest
 neatest.run()
 ```
 
--------------------------------------------------------------------------------
+# Why
 
 Calling `python -m unittest ...` can get tedious. It turns out pretty quickly that you prefer to run 
 some kind of `runtests.sh` instead of the command.
@@ -18,7 +18,7 @@ An executable `runtests.py` would be much more pythonic in all senses.
 You can replace
 
 ``` bash
-$ cd project_dir && python -m unittest discover -s . -p '*.py' --buffer
+$ cd project_dir && python -m unittest discover -s ./mymodule -p '*.py' --buffer
 ```
 
 with `project_dir/runtests.py`:
@@ -47,9 +47,15 @@ And it can be run on any OS with `python3 runtests.py`.
 
 But now we have a lot of boilerplate code.
 
-So, here is the `neatest`. It eliminates the need of boilerplate and keeps the essence.  
+So, here is the `neatest`. It eliminates the need of boilerplate and keeps the essence.
 
-## Run tests from terminal
+# Install
+
+``` bash
+pip3 install neatest
+```
+
+# Run tests
 
 #### project_dir / my_test.py
 
@@ -76,7 +82,7 @@ $ python /path/to/project_dir/my_test.py  # it works
 ```
 
 
-## Run tests from setup.py
+# Run tests from setup.py
 
 #### project_dir / my_test.py
 
