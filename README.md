@@ -1,6 +1,6 @@
 Runs standard unittest discovery and testing, requiring less rain dance.
 
-`neatest` replaces the call to the shell `python -m unittest discover ...` command with a programmaic call like
+`neatest` replaces the shell command `python -m unittest discover ...`  with a programmaic call like
 
 ```python
 import neatest
