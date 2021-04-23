@@ -17,8 +17,6 @@ def suite() -> unittest.TestSuite:
     """Can be imported into `setup.py` as `test_suite="test_unit.suite"`.
     But sadly it's deprecated."""
 
-    #print(__)
-
     init_py = next(Path(top_level_dir).rglob("__init__.py"), None)
     if not init_py:
         print('__init__.py not found')
