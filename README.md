@@ -15,7 +15,7 @@ some kind of `runtests.sh` instead of the command.
 But Python is cross-platform, and Bash is not.
 An executable `runtests.py` would be much more pythonic in all senses.
 
-In fact, you really can replace
+You can replace
 
 ``` bash
 $ cd project_dir && python -m unittest discover -s . -p '*.py' --buffer
