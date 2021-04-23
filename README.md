@@ -43,7 +43,7 @@ if result.failures or result.errors:
     exit(1)
 ```
 
-It can be run on any OS with `python3 runtests.py`.
+And it can be run on any OS with `python3 runtests.py`.
 
 But now we have a lot of boilerplate code.
 
