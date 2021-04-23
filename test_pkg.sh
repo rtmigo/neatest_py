@@ -7,7 +7,7 @@ pyrel_test_begin
 
 # check, that we can import this module by name
 # (so it's installed)
-python3 -c "import neatest"
+python3 -c "import neatest; neatest.run()"
 
 # remove generated package
 pyrel_test_end
