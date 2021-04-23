@@ -17,7 +17,10 @@ def suite() -> unittest.TestSuite:
     But sadly it's deprecated."""
 
     parent_dir = Path(__file__).parent
-    init_py, = parent_dir.glob("*/__init__.py")
+    init_py = next(parent_dir.rglob("__init__.py"), None)
+    if not init_py:
+        print('__init__.py not found')
+        exit(3)
 
     return unittest.TestLoader().discover(
         top_level_dir=str(parent_dir),
