@@ -45,7 +45,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Run unit test
       run: |
-        python ./test_unit.sh
+        python ./test_unit.py
     - name: Run pkg test
       run: |
         ./test_pkg.sh
