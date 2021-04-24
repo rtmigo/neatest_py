@@ -37,8 +37,8 @@ if result.failures or result.errors:
 
 This script can be run with `python3 run_tests.py`. Now the command is short and cross-platform. 
 
-But the simplest operation still requires non-obvious code. It is easier 
-to copy `run_tests.py` to a new project than to recreate it.
+But the code inside `run_tests.py` is long and not obvious. It is easier 
+to copy this script to a new project than to recreate it.
 
 So, here is the `neatest`. It makes the script even shorter.
 
