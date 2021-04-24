@@ -24,7 +24,8 @@ start_dir: Optional[str] = None
 '__init__.py' inside, starting recursive search from the current directory."""
 
 top_level_dir: Optional[str] = '.'
-"""Top level directory of project (defaults to current directory)"""
+"""Top level directory of project (defaults to current directory).
+None will set to the same value as `start_dir`."""
 
 buffer = True
 """Buffer stdout and stderr during tests"""
