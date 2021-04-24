@@ -23,8 +23,8 @@ start_dir: Optional[str] = None
 """Directory to start discovery. None means the first found directory with 
 '__init__.py' inside, starting recursive search from the current directory."""
 
-top_level_dir: Optional[str] = None
-"""Top level directory of project (defaults to start directory)"""
+top_level_dir: Optional[str] = '.'
+"""Top level directory of project (defaults to current directory)"""
 
 buffer = True
 """Buffer stdout and stderr during tests"""
