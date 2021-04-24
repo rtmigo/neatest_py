@@ -77,7 +77,7 @@ $ python3 run_tests.py
 ```
 
 
-## Run tests  from setup.py
+## Run tests with setup.py
 
 #### project_dir / run_tests.py
 
