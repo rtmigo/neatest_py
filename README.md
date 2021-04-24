@@ -78,6 +78,8 @@ neatest.run()
 
 ## Run tests with setup.py
 
+This way of running tests is deprecated by `setuptools`, but still works.
+
 #### project_dir / run_tests.py
 
 ``` python3
