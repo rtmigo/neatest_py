@@ -57,7 +57,7 @@ pip3 install neatest
 
 # Run
 
-## Run tests with script
+## Run tests with .py script
 
 #### project_dir / run_tests.py
 
