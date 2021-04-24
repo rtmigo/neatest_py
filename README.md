@@ -68,9 +68,11 @@ $ python3 run_tests.py
 ``` python3
 import neatest
 
-# optionally setting parameters
-neatest.pattern = '*_test.py'  
-neatest.verbocity = 2
+# optionally setting parameters. 
+# Setup.py will only respect parameters related to
+# the test discovery (TestSuite initialization)
+neatest.pattern = '*_test.py'  # will be used
+neatest.verbocity = 2          # will be ignored 
 ```
 
 #### project_dir / setup.py
