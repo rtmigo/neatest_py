@@ -35,7 +35,7 @@ if result.failures or result.errors:
     exit(1)
 ```
 
-This script can be run on any OS with `python3 run_tests.py`.
+This script can be run with `python3 run_tests.py`. Now the command is short and cross-platform. 
 
 But the simplest operation still requires non-obvious code. It is easier 
 to copy `run_tests.py` to a new project than to recreate it.
