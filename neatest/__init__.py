@@ -99,7 +99,10 @@ def find_start_dir(start_from: Path = None) -> Path:
 
     assert len(dirs_with_min_depth) == 1
 
-    return dirs_with_min_depth[0]
+    sd = dirs_with_min_depth[0].relative_to(start_from)
+    print(f"Found start_dir: {sd}")
+
+    return sd
 
 
 def suite() -> unittest.TestSuite:
