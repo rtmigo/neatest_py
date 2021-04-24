@@ -8,7 +8,7 @@ programmatic call from Python code.
 
 # Why
 
-Testing should be simple. One line command. A really short line.
+Testing should be simple. One-line command. A really short line.
 
 `python -m unittest discover ...` is too long.
 
