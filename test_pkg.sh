@@ -12,5 +12,8 @@ touch __init__.py
 # (so it's installed)
 python3 -c "import neatest; neatest.run()"
 
+# we can run the tests from terminal
+neatest
+
 # remove generated package
 pyrel_test_end

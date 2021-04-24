@@ -10,7 +10,7 @@ readme = (Path(__file__).parent / 'README.md').read_text()
 
 setup(
     name="neatest",
-    version="0.0.3",
+    version="0.0.4",
 
     author="Artёm IG",
     author_email="ortemeo@gmail.com",
@@ -25,6 +25,11 @@ setup(
     long_description_content_type='text/markdown',
 
     license='MIT',
+
+    entry_points={
+        'console_scripts': [
+            'neatest = neatest:main_entry_point',
+        ]},
 
     keywords="""unit test unittest unit-test testing discovery""".split(),
 
