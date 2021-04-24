@@ -1,5 +1,5 @@
 # [neatest](https://github.com/rtmigo/neatest_py)
-Runs standard Python unittest discovery and testing, while providing a more concise and readable way of configuring
+Runs standard Python unittest discovery and testing. Provides a more intuitive way of configuring
 the tests. 
 
 `neatest` replaces the shell command `python -m unittest discover ...`  with a brief programmatic call from Python code.
