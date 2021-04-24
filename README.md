@@ -6,7 +6,7 @@ Runs standard unittest discovery and testing, requiring less rain dance.
 
 Testing should be simple. One line command. A really short line.
 
-`python -m unittest ...` is too long. 
+`python -m unittest discover` is too long. 
 
 `run_tests.sh` is better. But POSIX-only and not pythonic.
 
