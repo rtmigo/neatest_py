@@ -55,9 +55,11 @@ neatest.run()
 pip3 install neatest
 ```
 
-# Run tests
+# Run
 
-#### project_dir / my_test.py
+## Run tests with .py script
+
+#### project_dir / run_tests.py
 
 ``` python3
 import neatest
@@ -71,13 +73,13 @@ if __name__ == "__main__":
 #### Terminal
 
 ``` bash
-$ python my_test.py
+$ python3 run_tests.py
 ```
 
 
-# Run tests from setup.py
+## Run tests with setup.py
 
-#### project_dir / my_test.py
+#### project_dir / run_tests.py
 
 ``` python3
 import neatest
@@ -90,7 +92,7 @@ neatest.pattern = '*.py'  # optional initialization
 ``` python3 
 setup(
   ...
-  test_suite='my_test.neatest.suite',
+  test_suite='run_tests.neatest.suite',
 )
 ```
 
@@ -98,6 +100,6 @@ setup(
 
 ``` bash
 $ cd project_dir
-$ python setup.py test
+$ python3 setup.py test
 ```
 
