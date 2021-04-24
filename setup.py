@@ -32,7 +32,7 @@ setup(
             'neatest = neatest:main_entry_point',
         ]},
 
-    keywords="""unit test unittest unit-test testing discovery""".split(),
+    keywords="""unit tests unittest unit-tests testing discovery""".split(),
 
     # https://pypi.org/classifiers/
     classifiers=[

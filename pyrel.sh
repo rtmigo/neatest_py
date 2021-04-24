@@ -94,7 +94,7 @@ function trap_add() {
         # Generate the new command
         new_cmd="${existing_cmd};${trap_add_cmd}"
 
-        # Assign the test
+        # Assign the tests
         # shellcheck disable=SC2064
         trap "${new_cmd}" "${trap_add_name}" || \
           fatal "unable to add to trap ${trap_add_name}"
@@ -201,7 +201,7 @@ function if_dir_unexisting_remove_on_exit() {
 function pyrel_test_begin() {
 
   # we will optionally remove dist, build and egg_info from the project dir
-  # if there weren't there before the test
+  # if there weren't there before the tests
 
   if_dir_unexisting_remove_on_exit "$project_root_dir/dist"
   if_dir_unexisting_remove_on_exit "$project_root_dir/build"

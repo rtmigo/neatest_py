@@ -1,0 +1,2 @@
+The tests in current directory ARE NOT for testing the [neatest] library.
+They are the tests [neatest] must run to verify it works.

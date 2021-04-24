@@ -5,7 +5,7 @@ set -e && source pyrel.sh
 # environment with pip
 pyrel_test_begin
 
-# we need this file to run the test
+# we need this file to run the tests
 touch __init__.py
 
 # check, that we can import this module by name
