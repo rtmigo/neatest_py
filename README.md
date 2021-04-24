@@ -112,9 +112,12 @@ $ python3 setup.py test
 
 Standard `unittest discover` searches only for tests in files named `test*.py`.
 
-## start_dir
+## start_dir and top_level_dir
 
-If not specified, `neatest` find the first directory containing `__init__.py` and consider it the starting directory.
+If not specified, `neatest` find the first directory containing `__init__.py` and consider it the `start_dir` 
+(the module containing the tests).
+
+The `top_level_dir` by default is the current directory, and it does not depend on `start_dir`.
 
 It works well with package structure like that:
 
@@ -131,13 +134,17 @@ project_dir
   setup.py
 ```
 
-It doesn't matter what the current directory is `project_dir` or `my_module`: `neatest` will search for 
-the tests inside `my_module`.  
+If we run testing with `project_dir` being the current directory, the tests will be found inside `my_module`. The 
+`project_dir` will remain the current directory for `import`s.
+
+---
 
 Standard `unittest discover` assumes that the starting directory is the current directory. If run from the `project_dir` 
-it will not find any tests, unless you explicitly specify that the starting directory is `my_module`.  
+it will not find any tests, unless you explicitly specify that the `start_dir` is `my_module`. But when you specify 
+`start_dir`, the `top_level_dir` also changes to the same value. If you want to keep `top_level_dir` 
+as the `project_dir`, you will have to specify this explicitly as well.
 
-For `neatest` to behave as standard, just set `neatest.start_dir="."`
+For `neatest` to behave as standard, just set `neatest.start_dir="."` and `neatest.top_level_dir=None`
 
 ## buffer
 
