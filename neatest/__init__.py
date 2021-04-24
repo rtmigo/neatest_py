@@ -28,7 +28,7 @@ top_level_dir: Optional[str] = '.'
 """Top level directory of project (defaults to current directory).
 None will set to the same value as `start_dir`."""
 
-buffer = True
+buffer = False
 """Buffer stdout and stderr during tests"""
 
 failfast = False
@@ -72,6 +72,20 @@ def suite() -> unittest.TestSuite:
         pattern=pattern)
 
 
+def __run_as_program():
+    # alternatively we can run the tests exactly as '-m unittest' does
+
+    argv = [sys.executable + ' -m unittest', 'discover', '-p', pattern, '-s', start_dir or str(init_py().parent), '-t',
+            top_level_dir]
+
+    return unittest.TestProgram(module=None,
+                                exit=False,
+                                verbosity=verbosity,
+                                failfast=failfast,
+                                buffer=buffer,
+                                argv=argv).result
+
+
 def run() -> unittest.TestResult:
     """Discovers and runs unit tests for the module."""
 
@@ -82,7 +96,7 @@ def run() -> unittest.TestResult:
     result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity, failfast=failfast,
                                      warnings=warnings.value).run(suite())
 
-    if result.failures or result.errors:
+    if not result.wasSuccessful():
         exit(1)
 
     return result

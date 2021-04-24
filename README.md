@@ -145,9 +145,3 @@ it will not find any tests, unless you explicitly specify that the `start_dir` i
 as the `project_dir`, you will have to specify this explicitly as well.
 
 For `neatest` to behave as standard, just set `neatest.start_dir="."` and `neatest.top_level_dir=None`
-
-## buffer
-
-`stdout` and `stderr` will be buffered by default.
-
-Standard `unittest discover` requires `--buffer` argument for that.
