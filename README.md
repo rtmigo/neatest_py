@@ -8,9 +8,9 @@ Testing should be simple. One line command. A really short line.
 
 `python -m unittest ...` is too long. 
 
-`./run_tests.sh` is better. But POSIX-only and not pythonic.
+`run_tests.sh` is better. But POSIX-only and not pythonic.
 
-`./run_tests.py` is much better.
+`run_tests.py` is much better.
 
 If your command looks like this
 
@@ -18,7 +18,7 @@ If your command looks like this
 $ cd project_dir && python -m unittest discover -s ./mymodule -p '*.py' --buffer
 ```
 
-use can replace it `run_tests.py`:
+use can replace it with `run_tests.py`:
 
 ``` python
 #!/usr/bin/env python3
@@ -35,9 +35,9 @@ if result.failures or result.errors:
     exit(1)
 ```
 
-It can be run on any OS with `python3 run_tests.py`.
+This script can be run on any OS with `python3 run_tests.py`.
 
-The problem is that the simplest operation still requires non-obvious code. It is easier 
+But the simplest operation still requires non-obvious code. It is easier 
 to copy `run_tests.py` to a new project than to recreate it.
 
 So, here is the `neatest`. It makes the script even shorter.
