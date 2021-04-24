@@ -74,13 +74,6 @@ if __name__ == "__main__":
 $ python my_test.py
 ```
 
-The good news is that you don't need to be in the project directory.
-
-``` bash
-$ cd anywhere
-$ python /path/to/project_dir/my_test.py  # it works
-```
-
 
 # Run tests from setup.py
 
