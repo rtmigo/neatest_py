@@ -4,6 +4,7 @@
 
 import subprocess
 import sys
+from enum import Enum
 from typing import List, Optional
 import unittest
 from pathlib import Path
@@ -36,7 +37,18 @@ failfast = False
 verbosity = 1
 """0 for quiet, 2 for verbose"""
 
-warnings = None
+
+class Warnings(Enum):
+    # https://www.geeksforgeeks.org/warnings-in-python/
+    default = "default"
+    error = "error"
+    ignore = "ignore"
+    always = "always"
+    module = "module"
+    once = "once"
+
+
+warnings: Warnings = Warnings.default
 
 
 ################################################################################
@@ -67,7 +79,8 @@ def run() -> unittest.TestResult:
         if subprocess.call([sys.executable, "-m", "pip", "install"] + deps) != 0:
             exit(1)
 
-    result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity, failfast=failfast, warnings=warnings).run(suite())
+    result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity, failfast=failfast,
+                                     warnings=warnings.value).run(suite())
 
     if result.failures or result.errors:
         exit(1)
