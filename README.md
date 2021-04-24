@@ -1,14 +1,16 @@
 # [neatest](https://github.com/rtmigo/neatest_py)
-Runs standard Python unittest discovery and testing. Provides a more convenient way of configuring
-the tests. 
 
-It replaces the shell command `python -m unittest discover ...`  with a brief programmatic call from Python code.
+Runs standard Python unittest discovery and testing. Provides a more convenient
+way of configuring the tests.
+
+It replaces the shell command `python -m unittest discover ...`  with a brief
+programmatic call from Python code.
 
 # Why
 
-Testing should be simple. One line command. A really short line.
+Testing should be simple. One-line command. A really short line.
 
-`python -m unittest discover ...` is too long. 
+`python -m unittest discover ...` is too long.
 
 `run_tests.sh` is better. But not pythonic and not cross-platform.
 
@@ -17,7 +19,7 @@ Testing should be simple. One line command. A really short line.
 For example, if your command looks like this
 
 ``` bash 
-$ cd project_dir && python -m unittest discover -s ./mymodule -p '*_test.py' --buffer
+$ cd project_dir && python -m unittest discover -s ./mymodule -p '*_test.py' -t '.'
 ```
 
 you can replace it with `run_tests.py`:
@@ -29,7 +31,8 @@ neatest.start_dir = "./module"
 neatest.run()
 ```
 
-This script can be run with `python3 run_tests.py`. Now the command is short and cross-platform.
+This script can be run with `python3 run_tests.py`. Now the command is short and
+cross-platform.
 
 # Install
 
@@ -60,7 +63,6 @@ if __name__ == "__main__":
 $ python3 run_tests.py
 ```
 
-
 ## Run tests from terminal
 
 ``` bash
@@ -75,6 +77,8 @@ neatest.run()
 ```
 
 ## Run tests with setup.py
+
+This way of running tests is deprecated by `setuptools`, but still works.
 
 #### project_dir / run_tests.py
 
@@ -104,44 +108,66 @@ $ cd project_dir
 $ python3 setup.py test
 ```
 
-# Differences from "-m unittest discover"
+# Test discovery
 
-## pattern
+## Filenames
 
-`neatest` searches for tests in all `*.py` files. Any `TestCase` in the code is considered a test to be run.
+`neatest` searches for tests in all `*.py` files. Any `TestCase` in the code is
+considered a test to be run.
 
-Standard `unittest discover` searches only for tests in files named `test*.py`.
+## Directories
 
-## start_dir and top_level_dir
+`neatest` assumes, that the current directory is the `top_level_dir`. It is the
+base directory for all imports.
 
-If not specified, `neatest` find the first directory containing `__init__.py` and consider it the `start_dir` 
-(the module containing the tests).
+The `start_dir` is the directory, containing the module with tests. `neatest`
+will try to find this directory automatically.
 
-The `top_level_dir` by default is the current directory, and it does not depend on `start_dir`.
-
-It works well with package structure like that:
+In this example, `neatest` will select the `my_module` because it is the top
+level directory containing `__init__.py`, and no sibling directories contain an 
+`__init__.py`.
 
 ```
 project_dir
+  subdir_a
+    some_files
+    but_no_init_py
+  subdir_b
+    some_files
+    but_no_init_py
   my_module
-    tests
-      __init__.py
-      test_a.py
-      test_b.py 
     __init__.py
     code1.py
     code2.py
   setup.py
 ```
 
-If we run testing with `project_dir` being the current directory, the tests will be found inside `my_module`. The 
-`project_dir` will remain the current directory for `import`s.
+In this example, `neatest` will select the `tests` module because of its name
 
----
+```
+project_dir
+  tests
+    __init__.py
+    test_a.py
+    test_b.py 
+  my_module
+    __init__.py
+    code1.py
+    code2.py
+  setup.py
+```
 
-Standard `unittest discover` assumes that the starting directory is the current directory. If run from the `project_dir` 
-it will not find any tests, unless you explicitly specify that the `start_dir` is `my_module`. But when you specify 
-`start_dir`, the `top_level_dir` also changes to the same value. If you want to keep `top_level_dir` 
-as the `project_dir`, you will have to specify this explicitly as well.
+In this example, `neatest` will stop with error. You should manually specify
+the `start_dir`.
 
-For `neatest` to behave as standard, just set `neatest.start_dir="."` and `neatest.top_level_dir=None`
+```
+project_dir
+  my_module_a
+    __init__.py
+  my_module_b
+    __init__.py    
+  setup.py
+```
+
+For `neatest` to behave as standard `unittest discover`,
+set `neatest.start_dir="."` and `neatest.top_level_dir=None`.

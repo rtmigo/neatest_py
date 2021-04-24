@@ -52,22 +52,57 @@ class Warnings(Enum):
 warnings: Warnings = Warnings.default
 
 
+class NeatestError(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class NeatestMoreThanOneModuleError(NeatestError):
+    pass
+
+
 ################################################################################
 
-
-def init_py() -> Path:
-    parent = Path('.').absolute()
-
-    for file in parent.rglob("__init__.py"):
-        rel = file.relative_to(parent)
+def find_start_dir(start_from: Path = None) -> Path:
+    if not start_from:
+        start_from = Path('.')
+    start_from = start_from.absolute()
+    dirs = []
+    for file in start_from.rglob("__init__.py"):
+        rel = file.relative_to(start_from)
         # skipping files in hidden dirs, like '.venv/**/__init__.py'
         # or '.tox/**/__init__.py'
         if any(str(p).startswith('.') for p in rel.parts):
             continue
-        return file
+        dirs.append(
+            (len(file.parent.relative_to(start_from).parts), file.parent))
 
-    print('__init__.py not found')
-    exit(1)
+    if not dirs:
+        raise NeatestError('Cannot find __init__.py in current directory.')
+
+    min_depth = min(depth for (depth, _) in dirs)
+    dirs_with_min_depth = [dir for (depth, dir) in dirs if depth == min_depth]
+
+    assert len(dirs_with_min_depth) >= 1
+
+    if len(dirs_with_min_depth) > 1:
+        dir_named_tests = next(
+            (p for p in dirs_with_min_depth if p.name == 'tests'),
+            None)
+        if dir_named_tests:
+            return dir_named_tests
+
+        relative = [str(p.relative_to(start_from)) for p in dirs_with_min_depth]
+        raise NeatestMoreThanOneModuleError(
+            f'Cannot choose the start_dir between {relative}. '
+            f'Please specify it manually.')
+
+    assert len(dirs_with_min_depth) == 1
+
+    sd = dirs_with_min_depth[0].relative_to(start_from)
+    print(f"Found start_dir: {sd}")
+
+    return sd
 
 
 def suite() -> unittest.TestSuite:
@@ -76,7 +111,7 @@ def suite() -> unittest.TestSuite:
 
     return unittest.TestLoader().discover(
         top_level_dir=top_level_dir,
-        start_dir=start_dir or str(init_py().parent),
+        start_dir=start_dir or str(find_start_dir()),
         pattern=pattern)
 
 
@@ -84,7 +119,7 @@ def __run_as_program():
     # alternatively we can run the tests exactly as '-m unittest' does
 
     argv = [sys.executable + ' -m unittest', 'discover', '-p', pattern, '-s',
-            start_dir or str(init_py().parent), '-t',
+            start_dir or str(find_start_dir()), '-t',
             top_level_dir]
 
     return unittest.TestProgram(module=None,

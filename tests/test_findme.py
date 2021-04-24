@@ -2,7 +2,7 @@ import unittest
 
 
 class Stub(unittest.TestCase):
-    # we just want to discover this test and make sure that 5 tests are executed
+    # we just want to discover this tests and make sure that 5 tests are executed
 
     def test_1(self):
         pass
