@@ -123,7 +123,7 @@ base directory for all imports.
 The `start_dir` is the directory, containing the module with tests. `neatest`
 will try to find this directory automatically.
 
-In this example, `neatest` will select the `my_module` because it is the top
+In the following example, `neatest` will select the `my_module` because it is the top
 level directory containing `__init__.py`, and no sibling directories contain an 
 `__init__.py`.
 
@@ -142,7 +142,7 @@ project_dir
   setup.py
 ```
 
-In this example, `neatest` will select the `tests` module because of its name
+In the following example, `neatest` will select the `tests` module because of its name
 
 ```
 project_dir
@@ -157,7 +157,7 @@ project_dir
   setup.py
 ```
 
-In this example, `neatest` will stop with error. You should manually specify
+In the following example, `neatest` will stop with error. You should manually specify
 the `start_dir`.
 
 ```
