@@ -8,17 +8,42 @@ from typing import List, Optional
 import unittest
 from pathlib import Path
 
-pattern: str = 'test*.py'
+# CONFIGURABLE OPTIONS #######################################################
+
 deps: Optional[List[str]] = None
-top_level_dir = "."
+"""Dependent modules to install with pip install before running tests.
+These are modules that are used for testing but are not needed in production 
+code. Therefore, they are expectedly missing from requirements.txt and setup.py.
+"""
+
+pattern: str = 'test*.py'
+"""Pattern to match tests ('test*.py' default)"""
+
 start_dir: Optional[str] = None
+"""Directory to start discovery. None means the first found directory with 
+'__init__.py' inside, starting recursive search from the current directory."""
+
+top_level_dir: Optional[str] = None
+"""Top level directory of project (defaults to start directory)"""
+
+buffer = True
+"""Buffer stdout and stderr during tests"""
+
+failfast = False
+"""Stop on first fail or error"""
+
+verbosity = 1
+"""0 for quiet, 2 for verbose"""
+
+
+################################################################################
 
 
 def init_py() -> Path:
-    result = next(Path(top_level_dir).rglob("__init__.py"), None)
+    result = next(Path('.').rglob("__init__.py"), None)
     if not result:
         print('__init__.py not found')
-        exit(3)
+        exit(1)
     return result
 
 
@@ -39,9 +64,9 @@ def run() -> unittest.TestResult:
         if subprocess.call([sys.executable, "-m", "pip", "install"] + deps) != 0:
             exit(1)
 
-    result = unittest.TextTestRunner(buffer=True).run(suite())
+    result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity, failfast=failfast).run(suite())
 
     if result.failures or result.errors:
-        exit(2)
+        exit(1)
 
     return result
