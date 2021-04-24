@@ -30,6 +30,7 @@ None will set to the same value as `start_dir`."""
 
 buffer = False
 """Buffer stdout and stderr during tests"""
+# when we set this to True, it hides valuable resource warnings
 
 failfast = False
 """Stop on first fail or error"""
@@ -55,11 +56,20 @@ warnings: Warnings = Warnings.default
 
 
 def init_py() -> Path:
-    result = next(Path('.').rglob("__init__.py"), None)
-    if not result:
-        print('__init__.py not found')
-        exit(1)
-    return result
+
+    parent = Path('.').absolute()
+
+    for file in parent.rglob("__init__.py"):
+        rel = file.relative_to(parent)
+        # skipping files in hidden dirs, like '.venv/**/__init__.py'
+        # or '.tox/**/__init__.py'
+        if any(str(p).startswith('.') for p in rel.parts):
+            continue
+        return file
+
+    print('__init__.py not found')
+    exit(1)
+
 
 
 def suite() -> unittest.TestSuite:

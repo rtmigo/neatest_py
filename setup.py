@@ -11,7 +11,7 @@ readme = (Path(__file__).parent / 'README.md').read_text()
 setup(
     name="neatest",
 
-    version="0.0.6",
+    version="0.0.7",
 
     author="Artёm IG",
     author_email="ortemeo@gmail.com",
