@@ -17,14 +17,14 @@ Testing should be simple. One line command. A really short line.
 For example, if your command looks like this
 
 ``` bash 
-$ cd project_dir && python -m unittest discover -s ./mymodule -p '*.py' --buffer
+$ cd project_dir && python -m unittest discover -s ./mymodule -p '*_test.py' --buffer
 ```
 
 you can replace it with `run_tests.py`:
 
 ``` python3
 import neatest
-neatest.pattern = "*.py"
+neatest.pattern = "*_test.py"
 neatest.start_dir = "./module"
 neatest.run()
 ```
@@ -46,7 +46,7 @@ pip3 install neatest
 ``` python3
 import neatest
 
-neatest.pattern = '*.py'  # optionally setting parameters
+neatest.pattern = '*_test.py'  # optionally setting parameters
 
 if __name__ == "__main__":
     neatest.run()
@@ -66,7 +66,7 @@ $ python3 run_tests.py
 ``` python3
 import neatest
 
-neatest.pattern = '*.py'  # optionally setting parameters
+neatest.pattern = '*_test.py'  # optionally setting parameters
 ```
 
 #### project_dir / setup.py
@@ -85,3 +85,43 @@ $ cd project_dir
 $ python3 setup.py test
 ```
 
+# Differences from "-m unittest discover"
+
+## pattern
+
+`neatest` searches for tests in all `*.py` files. Any `TestCase` in the code is considered a test to be run.
+
+Standard `unittest discover` searches only for tests in files named `test*.py`.
+
+## start_dir
+
+If not specified, `neatest` find the first directory containing `__init__.py` and consider it the starting directory.
+
+It works well with package structure like that:
+
+```
+project_dir
+  my_module
+    tests
+      __init__.py
+      test_a.py
+      test_b.py 
+    __init__.py
+    code1.py
+    code2.py
+  setup.py
+```
+
+It doesn't matter what the current directory is `project_dir` or `my_module`: `neatest` will search for the tests  
+inside `my_module`.
+
+Standard `unittest discover` assumes that the starting directory is the current directory. If run from the `project_dir` 
+it will not find any tests, unless you explicitly specify that the starting directory is `my_module`.  
+
+For `neatest` to behave as standard, just set `neatest.start_dir="."`
+
+## buffer
+
+`stdout` and `stderr` will be buffered by default.
+
+Standard `unittest discover` requires `--buffer` argument for that.
