@@ -61,6 +61,19 @@ $ python3 run_tests.py
 ```
 
 
+## Run tests from terminal
+
+``` bash
+$ neatest
+```
+
+is equivalent to running the script
+
+``` bash
+import neatest
+neatest.run()
+```
+
 ## Run tests with setup.py
 
 #### project_dir / run_tests.py

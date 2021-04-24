@@ -72,3 +72,7 @@ def run() -> unittest.TestResult:
         exit(1)
 
     return result
+
+
+def main_entry_point():
+    run()
