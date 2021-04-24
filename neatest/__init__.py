@@ -56,7 +56,6 @@ warnings: Warnings = Warnings.default
 
 
 def init_py() -> Path:
-
     parent = Path('.').absolute()
 
     for file in parent.rglob("__init__.py"):
@@ -69,7 +68,6 @@ def init_py() -> Path:
 
     print('__init__.py not found')
     exit(1)
-
 
 
 def suite() -> unittest.TestSuite:
@@ -85,7 +83,8 @@ def suite() -> unittest.TestSuite:
 def __run_as_program():
     # alternatively we can run the tests exactly as '-m unittest' does
 
-    argv = [sys.executable + ' -m unittest', 'discover', '-p', pattern, '-s', start_dir or str(init_py().parent), '-t',
+    argv = [sys.executable + ' -m unittest', 'discover', '-p', pattern, '-s',
+            start_dir or str(init_py().parent), '-t',
             top_level_dir]
 
     return unittest.TestProgram(module=None,
@@ -100,10 +99,12 @@ def run() -> unittest.TestResult:
     """Discovers and runs unit tests for the module."""
 
     if deps:
-        if subprocess.call([sys.executable, "-m", "pip", "install"] + deps) != 0:
+        if subprocess.call(
+                [sys.executable, "-m", "pip", "install"] + deps) != 0:
             exit(1)
 
-    result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity, failfast=failfast,
+    result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity,
+                                     failfast=failfast,
                                      warnings=warnings.value).run(suite())
 
     if not result.wasSuccessful():
