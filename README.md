@@ -112,8 +112,8 @@ project_dir
   setup.py
 ```
 
-It doesn't matter what the current directory is `project_dir` or `my_module`: `neatest` will search for the tests  
-inside `my_module`.
+It doesn't matter what the current directory is `project_dir` or `my_module`: `neatest` will search for 
+the tests inside `my_module`.  
 
 Standard `unittest discover` assumes that the starting directory is the current directory. If run from the `project_dir` 
 it will not find any tests, unless you explicitly specify that the starting directory is `my_module`.  
