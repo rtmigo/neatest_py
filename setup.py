@@ -10,6 +10,7 @@ readme = (Path(__file__).parent / 'README.md').read_text()
 
 setup(
     name="neatest",
+    
     version="0.0.4",
 
     author="Artёm IG",

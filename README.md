@@ -69,7 +69,7 @@ $ neatest
 
 is equivalent to running the script
 
-``` bash
+``` python3
 import neatest
 neatest.run()
 ```
