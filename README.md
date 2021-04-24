@@ -10,7 +10,7 @@ Testing should be simple. One line command. A really short line.
 
 `python -m unittest discover ...` is too long. 
 
-`run_tests.sh` is better. But not pythonic and POSIX-only.
+`run_tests.sh` is better. But not pythonic and not cross-platform.
 
 `run_tests.py` is much better.
 
