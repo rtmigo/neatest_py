@@ -1,40 +1,32 @@
 Runs standard unittest discovery and testing, requiring less rain dance.
 
-`neatest` replaces the shell command `python -m unittest discover ...`  with a programmaic call like
+`neatest` replaces the shell command `python -m unittest discover ...`  with a brief programmatic call from Python code.
 
-```python
-import neatest
-neatest.run()
+# Why
+
+Testing should be simple. One line command. A really short line.
+
+`python -m unittest discover` is too long. 
+
+`run_tests.sh` is better. But POSIX-only and not pythonic.
+
+`run_tests.py` is much better.
+
+If your command looks like this
+
+``` bash 
+$ cd project_dir && python -m unittest discover -s ./mymodule -p '*.py' --buffer
 ```
 
--------------------------------------------------------------------------------
-
-Calling `python -m unittest ...` can get tedious. It turns out pretty quickly that you prefer to run 
-some kind of `runtests.sh` instead of the command.
-
-But Python is cross-platform, and Bash is not.
-An executable `runtests.py` would be much more pythonic in all senses.
-
-You can replace
-
-``` bash
-$ cd project_dir && python -m unittest discover -s . -p '*.py' --buffer
-```
-
-with `project_dir/runtests.py`:
+use can replace it with `run_tests.py`:
 
 ``` python
 #!/usr/bin/env python3
  
 import unittest
-from pathlib import Path
-
-parent_dir = Path(__file__).parent
-init_py, = parent_dir.glob("*/__init__.py")
 
 suite = unittest.TestLoader().discover(
-    top_level_dir=str(parent_dir),
-    start_dir=str(init_py.parent),
+    start_dir="./mymodule",
     pattern="*.py")
 
 result = unittest.TextTestRunner(buffer=True).run(suite)
@@ -43,13 +35,27 @@ if result.failures or result.errors:
     exit(1)
 ```
 
-And it can be run on any OS with `python3 runtests.py`.
+This script can be run with `python3 run_tests.py`. Now the command is short and cross-platform. 
 
-But now we have a lot of boilerplate code.
+But the code inside `run_tests.py` is still long and not obvious. It is easier 
+to copy this script to a new project than to recreate it.
 
-So, here is the `neatest`. It eliminates the need of boilerplate and keeps the essence.  
+So, here is the `neatest`. It makes the script even shorter.
 
-## Run tests from terminal
+```python
+import neatest
+neatest.pattern = "*.py"
+neatest.start_dir = "./module"
+neatest.run()
+```
+
+# Install
+
+``` bash
+pip3 install neatest
+```
+
+# Run tests
 
 #### project_dir / my_test.py
 
@@ -68,15 +74,8 @@ if __name__ == "__main__":
 $ python my_test.py
 ```
 
-The good news is that you don't need to be in the project directory.
 
-``` bash
-$ cd anywhere
-$ python /path/to/project_dir/my_test.py  # it works
-```
-
-
-## Run tests from setup.py
+# Run tests from setup.py
 
 #### project_dir / my_test.py
 

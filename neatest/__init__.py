@@ -11,20 +11,24 @@ from pathlib import Path
 pattern: str = 'test*.py'
 deps: Optional[List[str]] = None
 top_level_dir = "."
+start_dir: Optional[str] = None
+
+
+def init_py() -> Path:
+    result = next(Path(top_level_dir).rglob("__init__.py"), None)
+    if not result:
+        print('__init__.py not found')
+        exit(3)
+    return result
 
 
 def suite() -> unittest.TestSuite:
     """Can be imported into `setup.py` as `test_suite="test_unit.suite"`.
     But sadly it's deprecated."""
 
-    init_py = next(Path(top_level_dir).rglob("__init__.py"), None)
-    if not init_py:
-        print('__init__.py not found')
-        exit(3)
-
     return unittest.TestLoader().discover(
         top_level_dir=top_level_dir,
-        start_dir=str(init_py.parent),
+        start_dir=start_dir or str(init_py().parent),
         pattern=pattern)
 
 
