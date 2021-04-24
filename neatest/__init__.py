@@ -16,8 +16,8 @@ These are modules that are used for testing but are not needed in production
 code. Therefore, they are expectedly missing from requirements.txt and setup.py.
 """
 
-pattern: str = 'test*.py'
-"""Pattern to match tests ('test*.py' default)"""
+pattern: str = '*.py'
+"""Mask for the names of the files that contain the tests."""
 
 start_dir: Optional[str] = None
 """Directory to start discovery. None means the first found directory with 
@@ -34,6 +34,8 @@ failfast = False
 
 verbosity = 1
 """0 for quiet, 2 for verbose"""
+
+warnings = None
 
 
 ################################################################################
@@ -64,7 +66,7 @@ def run() -> unittest.TestResult:
         if subprocess.call([sys.executable, "-m", "pip", "install"] + deps) != 0:
             exit(1)
 
-    result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity, failfast=failfast).run(suite())
+    result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity, failfast=failfast, warnings=warnings).run(suite())
 
     if result.failures or result.errors:
         exit(1)
