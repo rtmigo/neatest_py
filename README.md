@@ -46,7 +46,9 @@ pip3 install neatest
 ``` python3
 import neatest
 
-neatest.pattern = '*_test.py'  # optionally setting parameters
+# optionally setting parameters
+neatest.pattern = '*_test.py'
+neatest.verbocity = 2
 
 if __name__ == "__main__":
     neatest.run()
@@ -66,7 +68,9 @@ $ python3 run_tests.py
 ``` python3
 import neatest
 
-neatest.pattern = '*_test.py'  # optionally setting parameters
+# optionally setting parameters
+neatest.pattern = '*_test.py'  
+neatest.verbocity = 2
 ```
 
 #### project_dir / setup.py
