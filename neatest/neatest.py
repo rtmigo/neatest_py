@@ -9,6 +9,7 @@ from typing import List, Optional, Union, Tuple
 import unittest
 from pathlib import Path
 import neatest.constants
+from unittest import TextTestRunner, TestSuite, TestLoader
 
 
 class NeatestError(Exception):
@@ -94,7 +95,7 @@ def run(
         verbosity=Verbosity.normal,
         exit_if_failed=True,
         warnings: Warnings = Warnings.default
-) -> List[unittest.TestResult]:
+) -> unittest.TestResult:
     """Discovers and runs unit tests for module or modules.
 
     tests_require: Dependent modules to install with `pip install` before
@@ -139,39 +140,34 @@ def run(
         else:
             start_dirs = [str(p) for p in find_start_dirs()]
 
-        results = []
-
         # skipping directories that do not contain any test cases.
         # It's better to do it now, so terminal output will not end with
         # "module X contains no tests". All messages like this we be
         # at the beginning
-        suites: List[Tuple[Path, unittest.TestSuite]] = []
+        suites: List[unittest.TestSuite] = []
 
         for sd in start_dirs:
-            suite = unittest.TestLoader().discover(
+            suite = TestLoader().discover(
                 top_level_dir=(top_level_directory
                                if top_level_directory is not None else sd),
                 start_dir=sd,
                 pattern=pattern)
-            if suite.countTestCases() <= 0:
-                print(f'Module "{rel_to_top(Path(sd))}" contains no test cases')
-                continue
-            suites.append((Path(sd), suite))
+            print(
+                f'Module "{rel_to_top(Path(sd))}" contains '
+                f'{suite.countTestCases()} test cases')
+            if suite.countTestCases() > 0:
+                suites.append(suite)
 
-        for module_dir, suite in suites:
-            print(splitter)
-            print(f'Testing module "{rel_to_top(Path(module_dir))}"')
+        combo_suite = TestSuite(suites)
 
-            result = unittest.TextTestRunner(buffer=buffer,
-                                             verbosity=verbosity.value,
-                                             failfast=failfast,
-                                             warnings=warnings.value).run(suite)
-            results.append(result)
+        result = TextTestRunner(buffer=buffer,
+                                verbosity=verbosity.value,
+                                failfast=failfast,
+                                warnings=warnings.value).run(combo_suite)
 
-        if exit_if_failed and any(
-                not result.wasSuccessful() for result in results):
+        if exit_if_failed and not result.wasSuccessful():
             raise TestsError
-        return results
+        return result
 
     except NeatestError as e:
         print(e.message)

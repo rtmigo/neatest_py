@@ -33,10 +33,10 @@ class TestMyTest(unittest.TestCase):
             caught = True
         assert caught
 
-        assert sum(r.testsRun for r in neatest.run(exit_if_failed=False)) == 7
-        assert sum(r.testsRun for r in neatest.run(exit_if_failed=False)) == 7
-        assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
-        assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
+        assert neatest.run(exit_if_failed=False).testsRun == 7
+        assert neatest.run(exit_if_failed=False).testsRun == 7
+        assert neatest.run(pattern="test_*.py").testsRun == 5
+        assert neatest.run(pattern="test_*.py").testsRun == 5
 
 
 if __name__ == "__main__":
