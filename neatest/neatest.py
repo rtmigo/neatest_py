@@ -115,8 +115,10 @@ def run(
     verbosity: 0 for quiet, 2 for verbose.
     """
 
-    def rel_to_top(path: Path) -> str:
-        return str(path.relative_to(Path(top_level_directory)))
+    def rel_to_top(p: Path) -> str:
+        print(f"A {p}")
+        print(f"B {top_level_directory}")
+        return str(p.absolute().relative_to(Path(top_level_directory).absolute()))
 
     try:
 
@@ -140,7 +142,7 @@ def run(
 
         for sd in start_dirs:
             print(splitter)
-            print(f"Testing module {rel_to_top(Path(sd))}")
+            print(f'Testing module "{rel_to_top(Path(sd))}"')
 
             suite = unittest.TestLoader().discover(
                 top_level_dir=(top_level_directory
@@ -150,7 +152,7 @@ def run(
 
             if suite.countTestCases() <= 0:
                 print(splitter)
-                print(f"Module {rel_to_top(Path(sd))} contains no test cases")
+                print(f'Module "{rel_to_top(Path(sd))}" contains no test cases')
                 continue
 
             result = unittest.TextTestRunner(buffer=buffer,

@@ -5,9 +5,9 @@
 from pathlib import Path
 
 from setuptools import setup, find_packages
+import neatest.constants
 
 readme = (Path(__file__).parent / 'README.md').read_text()
-import neatest.constants
 
 setup(
     name="neatest",
