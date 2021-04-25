@@ -8,6 +8,7 @@ from enum import Enum, IntEnum
 from typing import List, Optional, Union
 import unittest
 from pathlib import Path
+import neatest.constants
 
 
 class NeatestError(Exception):
@@ -115,7 +116,8 @@ def run(
         if tests_require:
             # todo unittest
             if subprocess.call(
-                    [sys.executable, "-m", "pip", "install"] + tests_require) != 0:
+                    [sys.executable, "-m", "pip",
+                     "install"] + tests_require) != 0:
                 raise InstallationError
 
         if start_directory is not None:
@@ -162,10 +164,13 @@ def run(
     # where argv is ['python -m unittest', 'discover', ...]
 
 
+def print_version():
+    print(f'neatest {neatest.constants.__version__}')
+    print(f'{neatest.constants.__copyright__}')
+
+
 def main_entry_point():
-    import constants
     if "--version" in sys.argv:
-        print(f'neatest {constants.__version__}')
-        print(f'{constants.__copyright__}')
+        print_version()
         exit(0)
     run()

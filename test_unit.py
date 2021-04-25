@@ -1,7 +1,7 @@
 from pathlib import Path
 import unittest
 import neatest
-from neatest.neatest import ModulesNotFoundError
+from neatest.neatest import ModulesNotFoundError, Verbosity
 
 
 class TestMyTest(unittest.TestCase):
@@ -15,6 +15,9 @@ class TestMyTest(unittest.TestCase):
         self.assertEqual(names('only_c'), ['c'])
         with self.assertRaises(ModulesNotFoundError):
             names('complicated')
+
+    def test_start_directory(self):
+        neatest.run(start_directory='tests', exit_if_failed=False)
 
     def test_run(self):
         # we will also find a low of modules in sample_projects, but there

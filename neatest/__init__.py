@@ -1,2 +1,2 @@
 from .neatest import main_entry_point, run, NeatestError, InstallationError, \
-    TestsError, Warnings
+    TestsError, Warnings, print_version
