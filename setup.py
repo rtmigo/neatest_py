@@ -16,7 +16,7 @@ setup(
 
     author="Artёm IG",
     author_email="ortemeo@gmail.com",
-    url='https://github.com/rtmigo/neatest_py',
+    url='https://github.com/rtmigo/neatest_py#neatest',
 
     packages=find_packages(),
     install_requires=[],
