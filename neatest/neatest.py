@@ -74,6 +74,10 @@ class Verbosity(IntEnum):
     verbose = 2
 
 
+splitter = '-------------------------------------------------------------' \
+           '---------'
+
+
 def run(
         tests_require: Optional[List[str]] = None,
         pattern: str = '*.py',
@@ -111,6 +115,11 @@ def run(
     verbosity: 0 for quiet, 2 for verbose.
     """
 
+    def rel_to_top(p: Path) -> str:
+        print(f"A {p}")
+        print(f"B {top_level_directory}")
+        return str(p.absolute().relative_to(Path(top_level_directory).absolute()))
+
     try:
 
         if tests_require:
@@ -132,13 +141,19 @@ def run(
         results = []
 
         for sd in start_dirs:
-            print(f"Testing module {sd}")
+            print(splitter)
+            print(f'Testing module "{rel_to_top(Path(sd))}"')
 
             suite = unittest.TestLoader().discover(
                 top_level_dir=(top_level_directory
                                if top_level_directory is not None else sd),
                 start_dir=sd,
                 pattern=pattern)
+
+            if suite.countTestCases() <= 0:
+                print(splitter)
+                print(f'Module "{rel_to_top(Path(sd))}" contains no test cases')
+                continue
 
             result = unittest.TextTestRunner(buffer=buffer,
                                              verbosity=verbosity.value,

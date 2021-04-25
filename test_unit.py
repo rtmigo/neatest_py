@@ -20,6 +20,9 @@ class TestMyTest(unittest.TestCase):
         neatest.run(start_directory='tests', exit_if_failed=False)
 
     def test_run(self):
+
+        #open(__file__, "r")
+
         # we will also find a low of modules in sample_projects, but there
         # are no TestCases in them, so it will be "Ran 0 tests in 0.000s"
 
@@ -37,4 +40,4 @@ class TestMyTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(buffer=False)
