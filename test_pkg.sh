@@ -13,7 +13,7 @@ touch __init__.py
 python3 -c "import neatest; neatest.run()"
 
 # we can run the tests from terminal
-neatest
+neatest --version
 
 # remove generated package
 pyrel_test_end

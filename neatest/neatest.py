@@ -163,4 +163,9 @@ def run(
 
 
 def main_entry_point():
+    import constants
+    if "--version" in sys.argv:
+        print(f'neatest {constants.__version__}')
+        print(f'{constants.__copyright__}')
+        exit(0)
     run()

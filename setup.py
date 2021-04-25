@@ -7,11 +7,12 @@ from pathlib import Path
 from setuptools import setup, find_packages
 
 readme = (Path(__file__).parent / 'README.md').read_text()
+import neatest.constants
 
 setup(
     name="neatest",
 
-    version="0.0.10",
+    version=neatest.constants.__version__,
 
     author="Artёm IG",
     author_email="ortemeo@gmail.com",
