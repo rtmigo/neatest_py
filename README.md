@@ -2,8 +2,11 @@
 
 Runs unit tests with standard Python `unittest` module.
 
-Can be conveniently invoked from Python code as `neatest.run(...)` instead of 
-running `python -m unittest discover ...` in shell. 
+Automates test discovery so that all `TestCase`s inside the project
+directory are found.
+
+Can be conveniently invoked from Python code as `neatest.run(...)` instead of
+running `python -m unittest discover ...` in shell.
 
 # Why
 
@@ -75,13 +78,17 @@ neatest.run()
 
 # Arguments
 
-Most of the arguments to the `neatest.run` method have the same names and 
-meanings as the arguments of [unittest](https://docs.python.org/3/library/unittest.html#command-line-interface) and [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery). 
-
+Most of the arguments to the `neatest.run` method have the same names and
+meanings as the arguments
+of [unittest](https://docs.python.org/3/library/unittest.html#command-line-interface)
+and [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery)
+.
 
 # Test discovery
 
-The test discovery has different defaults than the standard [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery).
+The test discovery has different defaults than the
+standard [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery)
+.
 
 ## Filenames
 
@@ -95,10 +102,10 @@ $ python3 -m unittest discover -p "*.py"
 
 ## Directories
 
-`neatest` assumes, that the current directory is the `top_level_directory`. It is the
-base directory for all imports.
+`neatest` assumes, that the current directory is the `top_level_directory`. It
+is the base directory for all imports.
 
-If the `start_directory` are not specified, `neatest` will find all the modules 
+If the `start_directory` are not specified, `neatest` will find all the modules
 inside `top_level_directory` and will run tests for each of them.
 
 ```
