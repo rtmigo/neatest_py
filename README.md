@@ -2,7 +2,8 @@
 
 Runs unit tests with standard Python `unittest` module.
 
-Can be conveniently invoked from Python code as `neatest.run(...)` instead of `python -m unittest discover ...`. 
+Can be conveniently invoked from Python code as `neatest.run(...)` instead of 
+running `python -m unittest discover ...` in shell. 
 
 # Why
 
