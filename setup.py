@@ -38,7 +38,8 @@ setup(
 
     # https://pypi.org/classifiers/
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 3 - Alpha",
+        # "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         'License :: OSI Approved :: MIT License',
         'Topic :: Software Development :: Documentation',
