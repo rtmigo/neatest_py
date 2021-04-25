@@ -13,6 +13,7 @@ class TestMyTest(unittest.TestCase):
         self.assertEqual(names('a_b'), ['a', 'b'])
         self.assertEqual(names('b_in_a'), ['a'])
         self.assertEqual(names('only_c'), ['c'])
+        self.assertEqual(names('flat'), ['flat'])
         with self.assertRaises(ModulesNotFoundError):
             names('complicated')
 
