@@ -11,7 +11,7 @@ readme = (Path(__file__).parent / 'README.md').read_text()
 setup(
     name="neatest",
 
-    version="0.0.8",
+    version="0.0.9",
 
     author="Artёm IG",
     author_email="ortemeo@gmail.com",
@@ -20,7 +20,8 @@ setup(
     packages=find_packages(),
     install_requires=[],
 
-    description="Runs standard unittest discovery and testing, requiring less rain dance.",
+    description="Runs standard unittest discovery and testing, "
+                "requiring less rain dance.",
 
     long_description=readme,
     long_description_content_type='text/markdown',
