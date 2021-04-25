@@ -1,10 +1,9 @@
 # [neatest](https://github.com/rtmigo/neatest_py)
 
-Runs standard Python unittest discovery and testing. Provides a more convenient
-way of configuring the tests.
+Runs unit tests with standard Python `unittest` module.
 
-It replaces the shell command `python -m unittest discover ...`  with a brief
-programmatic call from Python code.
+Can be conveniently invoked from Python code as `neatest.run(...)` instead of 
+running `python -m unittest discover ...` in shell. 
 
 # Why
 
@@ -28,7 +27,7 @@ you can replace it with `run_tests.py`:
 from neatest import run
 
 run( pattern = "*_test.py",
-     start_dirs = ["./module"] )
+     start_directory = "./mymodule" )
 ```
 
 This script can be run with `python3 run_tests.py`. Now the command is short and
@@ -47,12 +46,12 @@ pip3 install neatest
 #### project_dir / run_tests.py
 
 ``` python3
-from neatest import run
+import neatest
 
 if __name__ == "__main__":
     # all arguments are optional
-    run( pattern = '*_test.py'
-         verbocity = 2 )
+    neatest.run( pattern = '*_test.py'
+                 verbosity = neatest.Verbosity.quiet )
 ```
 
 #### Terminal
@@ -74,40 +73,63 @@ import neatest
 neatest.run()
 ```
 
+# Arguments
+
+Most of the arguments to the `neatest.run` method have the same names and 
+meanings as the arguments of [unittest](https://docs.python.org/3/library/unittest.html#command-line-interface) and [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery). 
 
 
 # Test discovery
 
+The test discovery has different defaults than the standard [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery).
+
 ## Filenames
 
-`neatest` searches for tests in all `*.py` files. Any `TestCase` in the code is
-considered a test to be run.
+`neatest` searches for tests in all `*.py` files.
+
+So the default filename `pattern` is equivalent to setting `-p` like that:
+
+``` bash
+$ python3 -m unittest discover -p "*.py"
+```
 
 ## Directories
 
-`neatest` assumes, that the current directory is the `top_level_dir`. It is the
+`neatest` assumes, that the current directory is the `top_level_directory`. It is the
 base directory for all imports.
 
-If the `start_dirs` are not specified, `neatest` will find all the modules 
-inside `top_level_dir` and will import tests from them.
-
-In the following example, we will run tests for `module_a`, and then 
-for `module_b`. 
+If the `start_directory` are not specified, `neatest` will find all the modules 
+inside `top_level_directory` and will run tests for each of them.
 
 ```
-project_dir
-  module_a              <-- will be tested
+top_level_directory
+  module_a              # module_a will be tested
     __init__.py
-  module_b              <-- will be tested
+  module_b              # module_b will be tested
     __init__.py
+  module_c              # module_c will be tested
+    __init__.py
+    submodule           # submodule will be tested as a part of module_c 
+      __init__.py         
+  subdir                # subdir is not a module
+      module_d          # module_d will NOT be tested 
+        __init__.py     # because it is not importable     
   setup.py
 ```
 
-It is the same as running consequently
+So running
 
 ``` bash
-$ cd project_dir
-$ python3 -m unittest discover -t . -s module_a
-$ python3 -m unittest discover -t . -s module_b
+$ cd top_level_directory
+$ neatest
+```
+
+is the same as running
+
+``` bash
+$ cd top_level_directory
+$ python3 -m unittest discover -t . -s module_a -p "*.py"
+$ python3 -m unittest discover -t . -s module_b -p "*.py"
+$ python3 -m unittest discover -t . -s module_c -p "*.py"
 ```
 

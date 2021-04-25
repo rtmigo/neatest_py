@@ -1,41 +1,40 @@
 from pathlib import Path
-
+import unittest
 import neatest
+from neatest.neatest import ModulesNotFoundError, Verbosity
 
 
-def test_run():
-    # we will also find a low of modules in sample_projects, but there
-    # are no TestCases in them, so it will be "Ran 0 tests in 0.000s"
+class TestMyTest(unittest.TestCase):
+    def test_find_start_dirs(self):
+        def names(s):
+            start = Path('.') / 'sample_projects' / s
+            return [p.name for p in neatest.neatest.find_start_dirs(start)]
 
-    caught = False
-    try:
-        neatest.run()  # at least one test fails
-    except SystemExit:
-        caught = True
-    assert caught
+        self.assertEqual(names('a_b'), ['a', 'b'])
+        self.assertEqual(names('b_in_a'), ['a'])
+        self.assertEqual(names('only_c'), ['c'])
+        with self.assertRaises(ModulesNotFoundError):
+            names('complicated')
 
-    assert sum(r.testsRun for r in neatest.run(exit_if_failed=False)) == 7
-    assert sum(r.testsRun for r in neatest.run(exit_if_failed=False)) == 7
-    assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
-    assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
+    def test_start_directory(self):
+        neatest.run(start_directory='tests', exit_if_failed=False)
 
+    def test_run(self):
+        # we will also find a low of modules in sample_projects, but there
+        # are no TestCases in them, so it will be "Ran 0 tests in 0.000s"
 
-def test_find_start_dirs():
-    def names(s):
-        start = Path('.') / 'sample_projects' / s
-        return [p.name for p in neatest.find_start_dirs(start)]
+        caught = False
+        try:
+            neatest.run()  # at least one test fails
+        except SystemExit:
+            caught = True
+        assert caught
 
-    assert names('a_b') == ['a', 'b']
-    assert names('b_in_a') == ['a']
-    assert names('only_c') == ['c']
-    assert names('complicated') == ['b', 'e']
+        assert sum(r.testsRun for r in neatest.run(exit_if_failed=False)) == 7
+        assert sum(r.testsRun for r in neatest.run(exit_if_failed=False)) == 7
+        assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
+        assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
 
 
 if __name__ == "__main__":
-    try:
-        test_run()
-        test_find_start_dirs()
-        print("NEATEST OK")
-    except:
-        # the following message indicates a problem in neatest itself
-        print("NEATEST ERROR")
+    unittest.main()

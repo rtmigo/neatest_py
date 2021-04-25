@@ -10,10 +10,10 @@ touch __init__.py
 
 # check, that we can import this module by name
 # (so it's installed)
-python3 -c "import neatest; neatest.run()"
+python3 -c "import neatest; neatest.print_version()"
 
 # we can run the tests from terminal
-neatest
+neatest --version
 
 # remove generated package
 pyrel_test_end
