@@ -154,7 +154,7 @@ def run(
                 pattern=pattern)
             print(
                 f'Module "{rel_to_top(Path(sd))}" contains '
-                f'{suite.countTestCases()} test cases')
+                f'{suite.countTestCases()} tests')
             if suite.countTestCases() > 0:
                 suites.append(suite)
 
