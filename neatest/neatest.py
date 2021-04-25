@@ -74,8 +74,14 @@ class Verbosity(IntEnum):
     verbose = 2
 
 
-splitter = '-------------------------------------------------------------' \
-           '---------'
+splitter = '-' * 70
+
+
+def install_requirements(tests_require: List[str]):
+    if subprocess.call(
+            [sys.executable, "-m", "pip",
+             "install"] + tests_require) != 0:
+        raise InstallationError
 
 
 def run(
@@ -116,19 +122,13 @@ def run(
     """
 
     def rel_to_top(p: Path) -> str:
-        print(f"A {p}")
-        print(f"B {top_level_directory}")
         return str(
             p.absolute().relative_to(Path(top_level_directory).absolute()))
 
     try:
-
         if tests_require:
-            # todo unittest
-            if subprocess.call(
-                    [sys.executable, "-m", "pip",
-                     "install"] + tests_require) != 0:
-                raise InstallationError
+            install_requirements(tests_require)
+            print(splitter)
 
         if start_directory is not None:
             # todo unittest
@@ -166,7 +166,6 @@ def run(
                                              verbosity=verbosity.value,
                                              failfast=failfast,
                                              warnings=warnings.value).run(suite)
-
             results.append(result)
 
         if exit_if_failed and any(
