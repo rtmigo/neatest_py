@@ -41,8 +41,9 @@ def find_start_dirs(start_from: Path = None) -> List[Path]:
         start_from = Path('.')
     start_from = start_from.absolute()
 
-    # TODO this can be rewritten more effectively with recursion, that does
-    # not go deeper once "__init__.py" is found
+    if (start_from/"__init__.py").exists():
+        return [start_from]
+
     dirs = []
     for subdir in start_from.glob("*"):
         if subdir.name.startswith('.'):
