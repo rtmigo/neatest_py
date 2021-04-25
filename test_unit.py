@@ -4,31 +4,26 @@ import neatest
 
 
 def run():
-    assert neatest.run().testsRun == 7
-    assert neatest.run().testsRun == 7
-    neatest.pattern = "test_*.py"
-    assert neatest.run().testsRun == 5
-    assert neatest.run().testsRun == 5
+    # we will also find a low of modules in sample_projects, but there
+    # are no TestCases in them, so it will be "Ran 0 tests in 0.000s"
+    assert sum(r.testsRun for r in neatest.run()) == 7
+    assert sum(r.testsRun for r in neatest.run()) == 7
+    assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
+    assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
 
 
 def test_iter_dir():
-    def proj(s):
-        return Path('.') / 'sample_projects' / s
+    def names(s):
+        start = Path('.') / 'sample_projects' / s
+        return [p.name for p in neatest.find_start_dir(start)]
 
-    assert neatest.find_start_dir(
-        proj('b_in_a')).name == "a"
-
-    assert neatest.find_start_dir(
-        proj('only_c')).name == "c"
-
-    caught = False
-    try:
-        neatest.find_start_dir(proj('a_b'))
-    except neatest.NeatestMoreThanOneModuleError:
-        caught = True
-    assert caught
+    assert names('a_b') == ['a', 'b']
+    assert names('b_in_a') == ['a']
+    assert names('only_c') == ['c']
+    assert names('complicated') == ['b', 'e']
 
 
 if __name__ == "__main__":
     run()
     test_iter_dir()
+    print("ok")

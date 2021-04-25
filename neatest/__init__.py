@@ -9,34 +9,8 @@ from typing import List, Optional
 import unittest
 from pathlib import Path
 
+
 # CONFIGURABLE OPTIONS #######################################################
-
-deps: Optional[List[str]] = None
-"""Dependent modules to install with pip install before running tests.
-These are modules that are used for testing but are not needed in production 
-code. Therefore, they are expectedly missing from requirements.txt and setup.py.
-"""
-
-pattern: str = '*.py'
-"""Mask for the names of the files that contain the tests."""
-
-start_dir: Optional[str] = None
-"""Directory to start discovery. None means the first found directory with 
-'__init__.py' inside, starting recursive search from the current directory."""
-
-top_level_dir: Optional[str] = '.'
-"""Top level directory of project (defaults to current directory).
-None will set to the same value as `start_dir`."""
-
-buffer = False
-"""Buffer stdout and stderr during tests"""
-# when we set this to True, it hides valuable resource warnings
-
-failfast = False
-"""Stop on first fail or error"""
-
-verbosity = 1
-"""0 for quiet, 2 for verbose"""
 
 
 class Warnings(Enum):
@@ -47,9 +21,6 @@ class Warnings(Enum):
     always = "always"
     module = "module"
     once = "once"
-
-
-warnings: Warnings = Warnings.default
 
 
 class NeatestError(Exception):
@@ -63,7 +34,15 @@ class NeatestMoreThanOneModuleError(NeatestError):
 
 ################################################################################
 
-def find_start_dir(start_from: Path = None) -> Path:
+def contains_parent(possible_parents: List[Path], possible_child: Path) -> bool:
+    child_str = str(possible_child.absolute())
+    for p in possible_parents:
+        if child_str.startswith(str(p.absolute())):
+            return True
+    return False
+
+
+def find_start_dir(start_from: Path = None) -> List[Path]:
     if not start_from:
         start_from = Path('.')
     start_from = start_from.absolute()
@@ -80,72 +59,79 @@ def find_start_dir(start_from: Path = None) -> Path:
     if not dirs:
         raise NeatestError('Cannot find __init__.py in current directory.')
 
-    min_depth = min(depth for (depth, _) in dirs)
-    dirs_with_min_depth = [dir for (depth, dir) in dirs if depth == min_depth]
+    result_paths = []
+    for _, dir_path in dirs:
+        if not contains_parent(result_paths, dir_path):
+            result_paths.append(dir_path)
 
-    assert len(dirs_with_min_depth) >= 1
-
-    if len(dirs_with_min_depth) > 1:
-        dir_named_tests = next(
-            (p for p in dirs_with_min_depth if p.name == 'tests'),
-            None)
-        if dir_named_tests:
-            return dir_named_tests
-
-        relative = [str(p.relative_to(start_from)) for p in dirs_with_min_depth]
-        raise NeatestMoreThanOneModuleError(
-            f'Cannot choose the start_dir between {relative}. '
-            f'Please specify it manually.')
-
-    assert len(dirs_with_min_depth) == 1
-
-    sd = dirs_with_min_depth[0].relative_to(start_from)
-    print(f"Found start_dir: {sd}")
-
-    return sd
+    return result_paths
 
 
-def suite() -> unittest.TestSuite:
-    """Can be imported into `setup.py` as `test_suite="test_unit.suite"`.
-    But sadly it's deprecated."""
+def run(
+        deps: Optional[List[str]] = None,
+        pattern: str = '*.py',
+        start_dirs: Optional[List[str]] = None,
+        top_level_dir: Optional[str] = '.',
+        buffer=False,
+        failfast=False,
+        verbosity=1,
+        exit_if_failed=True,
+        warnings: Warnings = Warnings.default
+) -> List[unittest.TestResult]:
+    """Discovers and runs unit tests for the module.
+    deps: Dependent modules to install with pip install before running tests.
+    These are modules that are used for testing but are not needed in production
+    code. Therefore, they are expectedly missing from requirements.txt and
+    setup.py.
 
-    return unittest.TestLoader().discover(
-        top_level_dir=top_level_dir,
-        start_dir=start_dir or str(find_start_dir()),
-        pattern=pattern)
+    pattern: Mask for the names of the files that contain the tests.
 
+    start_dir: Directory to start discovery. None means the first found
+    directory with '__init__.py' inside, starting recursive search from the
+    current directory.
 
-def __run_as_program():
-    # alternatively we can run the tests exactly as '-m unittest' does
+    top_level_dir: Top level directory of project (defaults to current
+    directory). None will set to the same value as `start_dir`.
 
-    argv = [sys.executable + ' -m unittest', 'discover', '-p', pattern, '-s',
-            start_dir or str(find_start_dir()), '-t',
-            top_level_dir]
+    buffer: Buffer stdout and stderr during tests
 
-    return unittest.TestProgram(module=None,
-                                exit=False,
-                                verbosity=verbosity,
-                                failfast=failfast,
-                                buffer=buffer,
-                                argv=argv).result
+    failfast: Stop on first fail or error
 
-
-def run() -> unittest.TestResult:
-    """Discovers and runs unit tests for the module."""
+    verbosity: 0 for quiet, 2 for verbose
+    """
 
     if deps:
         if subprocess.call(
                 [sys.executable, "-m", "pip", "install"] + deps) != 0:
             exit(1)
 
-    result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity,
-                                     failfast=failfast,
-                                     warnings=warnings.value).run(suite())
+    # if start_dir is not None:
+    if start_dirs is None:
+        start_dirs = [str(p) for p in find_start_dir()]
 
-    if not result.wasSuccessful():
+    results = []
+
+    for sd in start_dirs:
+        print(f"start_dir: {sd}")
+
+        suite = unittest.TestLoader().discover(
+            top_level_dir=top_level_dir,
+            start_dir=sd,
+            pattern=pattern)
+
+        result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity,
+                                         failfast=failfast,
+                                         warnings=warnings.value).run(suite)
+
+        results.append(result)
+
+    if exit_if_failed and any(not result.wasSuccessful() for result in results):
         exit(1)
+    return results
 
-    return result
+    # alternatively we could run the tests exactly as '-m unittest' does
+    # with unittest.TestProgram(module=None, argv)
+    # where argv is ['python -m unittest', 'discover', ...]
 
 
 def main_entry_point():
