@@ -85,8 +85,7 @@ The test discovery has different defaults than the standard [unittest discover](
 
 ## Filenames
 
-`neatest` searches for tests in all `*.py` files. Any `TestCase` in the code is
-considered a test to be run.
+`neatest` searches for tests in all `*.py` files.
 
 So the default filename `pattern` is equivalent to setting `-p` like that:
 
