@@ -109,7 +109,7 @@ top_level_directory
     __init__.py
   module_c              # module_c will be tested
     __init__.py
-    submodule           # will be tested as a part of module_c 
+    submodule           # submodule will be tested as a part of module_c 
       __init__.py         
   subdir                # subdir is not a module
       module_d          # module_d will NOT be tested 
