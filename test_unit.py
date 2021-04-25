@@ -21,7 +21,7 @@ class TestMyTest(unittest.TestCase):
 
     def test_run(self):
 
-        #open(__file__, "r")
+        # open(__file__, "r")
 
         # we will also find a low of modules in sample_projects, but there
         # are no TestCases in them, so it will be "Ran 0 tests in 0.000s"
@@ -40,4 +40,5 @@ class TestMyTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main(buffer=False)
+    z = unittest.main(buffer=False, exit=False)
+    print(f"NEATEST OK: {z.result.wasSuccessful()}")

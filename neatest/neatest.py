@@ -5,7 +5,7 @@
 import subprocess
 import sys
 from enum import Enum, IntEnum
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Tuple
 import unittest
 from pathlib import Path
 import neatest.constants
@@ -118,7 +118,8 @@ def run(
     def rel_to_top(p: Path) -> str:
         print(f"A {p}")
         print(f"B {top_level_directory}")
-        return str(p.absolute().relative_to(Path(top_level_directory).absolute()))
+        return str(
+            p.absolute().relative_to(Path(top_level_directory).absolute()))
 
     try:
 
@@ -140,20 +141,26 @@ def run(
 
         results = []
 
-        for sd in start_dirs:
-            print(splitter)
-            print(f'Testing module "{rel_to_top(Path(sd))}"')
+        # skipping directories that do not contain any test cases.
+        # It's better to do it now, so terminal output will not end with
+        # "module X contains no tests". All messages like this we be
+        # at the beginning
+        suites: List[Tuple[Path, unittest.TestSuite]] = []
 
+        for sd in start_dirs:
             suite = unittest.TestLoader().discover(
                 top_level_dir=(top_level_directory
                                if top_level_directory is not None else sd),
                 start_dir=sd,
                 pattern=pattern)
-
             if suite.countTestCases() <= 0:
-                print(splitter)
                 print(f'Module "{rel_to_top(Path(sd))}" contains no test cases')
                 continue
+            suites.append((Path(sd), suite))
+
+        for module_dir, suite in suites:
+            print(splitter)
+            print(f'Testing module "{rel_to_top(Path(module_dir))}"')
 
             result = unittest.TextTestRunner(buffer=buffer,
                                              verbosity=verbosity.value,
