@@ -18,7 +18,7 @@ Testing should be simple. One-line command. A really short line.
 For example, if your command looks like this
 
 ``` bash 
-$ cd project_dir && python -m unittest discover -s ./mymodule -p '*_test.py' -t '.'
+$ python -m unittest discover -s ./mymodule -p '*_test.py' -t '.'
 ```
 
 you can replace it with `run_tests.py`:
