@@ -8,4 +8,5 @@ class Stub2(unittest.TestCase):
         pass
 
     def test_2(self):
+        raise AssertionError
         pass

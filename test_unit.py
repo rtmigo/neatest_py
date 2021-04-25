@@ -3,19 +3,27 @@ from pathlib import Path
 import neatest
 
 
-def run():
+def test_run():
     # we will also find a low of modules in sample_projects, but there
     # are no TestCases in them, so it will be "Ran 0 tests in 0.000s"
-    assert sum(r.testsRun for r in neatest.run()) == 7
-    assert sum(r.testsRun for r in neatest.run()) == 7
+
+    caught = False
+    try:
+        neatest.run()  # at least one test fails
+    except SystemExit:
+        caught = True
+    assert caught
+
+    assert sum(r.testsRun for r in neatest.run(exit_if_failed=False)) == 7
+    assert sum(r.testsRun for r in neatest.run(exit_if_failed=False)) == 7
     assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
     assert sum(r.testsRun for r in neatest.run(pattern="test_*.py")) == 5
 
 
-def test_iter_dir():
+def test_find_start_dirs():
     def names(s):
         start = Path('.') / 'sample_projects' / s
-        return [p.name for p in neatest.find_start_dir(start)]
+        return [p.name for p in neatest.find_start_dirs(start)]
 
     assert names('a_b') == ['a', 'b']
     assert names('b_in_a') == ['a']
@@ -24,6 +32,10 @@ def test_iter_dir():
 
 
 if __name__ == "__main__":
-    run()
-    test_iter_dir()
-    print("ok")
+    try:
+        test_run()
+        test_find_start_dirs()
+        print("NEATEST OK")
+    except:
+        # the following message indicates a problem in neatest itself
+        print("NEATEST ERROR")

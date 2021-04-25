@@ -10,26 +10,19 @@ import unittest
 from pathlib import Path
 
 
-# CONFIGURABLE OPTIONS #######################################################
-
-
-class Warnings(Enum):
-    # https://www.geeksforgeeks.org/warnings-in-python/
-    default = "default"
-    error = "error"
-    ignore = "ignore"
-    always = "always"
-    module = "module"
-    once = "once"
-
-
 class NeatestError(Exception):
     def __init__(self, message: str):
         self.message = message
 
 
-class NeatestMoreThanOneModuleError(NeatestError):
-    pass
+class InstallationError(NeatestError):
+    def __init__(self):
+        super().__init__("Failed to install test dependencies.")
+
+
+class TestsError(NeatestError):
+    def __init__(self):
+        super().__init__("Testing was unsuccessful.")
 
 
 ################################################################################
@@ -42,7 +35,7 @@ def contains_parent(possible_parents: List[Path], possible_child: Path) -> bool:
     return False
 
 
-def find_start_dir(start_from: Path = None) -> List[Path]:
+def find_start_dirs(start_from: Path = None) -> List[Path]:
     if not start_from:
         start_from = Path('.')
     start_from = start_from.absolute()
@@ -65,6 +58,16 @@ def find_start_dir(start_from: Path = None) -> List[Path]:
             result_paths.append(dir_path)
 
     return result_paths
+
+
+class Warnings(Enum):
+    # https://www.geeksforgeeks.org/warnings-in-python/
+    default = "default"
+    error = "error"
+    ignore = "ignore"
+    always = "always"
+    module = "module"
+    once = "once"
 
 
 def run(
@@ -100,34 +103,42 @@ def run(
     verbosity: 0 for quiet, 2 for verbose
     """
 
-    if deps:
-        if subprocess.call(
-                [sys.executable, "-m", "pip", "install"] + deps) != 0:
-            exit(1)
+    try:
 
-    # if start_dir is not None:
-    if start_dirs is None:
-        start_dirs = [str(p) for p in find_start_dir()]
+        if deps:
+            if subprocess.call(
+                    [sys.executable, "-m", "pip", "install"] + deps) != 0:
+                raise InstallationError
 
-    results = []
+        # if start_dir is not None:
+        if start_dirs is None:
+            start_dirs = [str(p) for p in find_start_dirs()]
 
-    for sd in start_dirs:
-        print(f"start_dir: {sd}")
+        results = []
 
-        suite = unittest.TestLoader().discover(
-            top_level_dir=top_level_dir,
-            start_dir=sd,
-            pattern=pattern)
+        for sd in start_dirs:
+            print(f"start_dir: {sd}")
 
-        result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity,
-                                         failfast=failfast,
-                                         warnings=warnings.value).run(suite)
+            suite = unittest.TestLoader().discover(
+                top_level_dir=top_level_dir,
+                start_dir=sd,
+                pattern=pattern)
 
-        results.append(result)
+            result = unittest.TextTestRunner(buffer=buffer, verbosity=verbosity,
+                                             failfast=failfast,
+                                             warnings=warnings.value).run(suite)
 
-    if exit_if_failed and any(not result.wasSuccessful() for result in results):
-        exit(1)
-    return results
+            results.append(result)
+
+        if exit_if_failed and any(
+                not result.wasSuccessful() for result in results):
+            raise TestsError
+        return results
+
+    except NeatestError as e:
+        print(e.message)
+        if exit_if_failed:
+            sys.exit(1)
 
     # alternatively we could run the tests exactly as '-m unittest' does
     # with unittest.TestProgram(module=None, argv)
