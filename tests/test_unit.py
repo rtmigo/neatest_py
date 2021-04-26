@@ -46,6 +46,11 @@ class TestsProcess(unittest.TestCase):
         d = json.loads(completed.stdout)
         self.assertEqual(d['run'], 5)
 
+    def test_project_flat(self):
+        completed = _run(["--json"], cwd=sample_project_path('flat'))
+        d = json.loads(completed.stdout)
+        self.assertEqual(d['run'], 5)
+
 
 class TestMyTest(unittest.TestCase):
 
