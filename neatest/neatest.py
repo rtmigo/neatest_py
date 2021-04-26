@@ -131,6 +131,21 @@ def set_warnings_filter(w: PythonWarningsArgs):
                 message=r'Please use assert\w+ instead.')
 
 
+class TempMute:
+    def __init__(self):
+        self.old_stdout = sys.stdout
+        self.old_stderr = sys.stderr
+        sys.stdout = io.StringIO()
+        sys.stderr = io.StringIO()
+
+    def unmute(self):
+        if self.old_stdout is not None:
+            sys.stdout = self.old_stdout
+            sys.stderr = self.old_stderr
+            self.old_stdout = None
+            self.old_stderr = None
+
+
 def run(
         tests_require: Optional[List[str]] = None,
         pattern: str = default_pattern,
@@ -172,11 +187,7 @@ def run(
 
     result: Optional[TestResult] = None
 
-    if json:
-        old_stdout = sys.stdout
-        old_stderr = sys.stderr
-        sys.stdout = io.StringIO()
-        sys.stderr = io.StringIO()
+    temp_mute = TempMute() if json else None
 
     try:
 
@@ -198,10 +209,6 @@ def run(
             else:
                 start_dirs = [str(p) for p in find_start_dirs()]
 
-            # skipping directories that do not contain any test cases.
-            # It's better to do it now, so terminal output will not end with
-            # "module X contains no tests". All messages like this we be
-            # at the beginning
             suites: List[unittest.TestSuite] = []
 
             for sd in start_dirs:
@@ -221,10 +228,15 @@ def run(
             with catch_warnings(record=True) as catcher:
 
                 # with the default unittest, even if warnings are enabled, the
-                # --buffer argument makes them invisible: these warnings are
-                # printed and not displayed unless the corresponding test fails
+                # --buffer argument makes them invisible: warnings are
+                # printed, but the output is buffered and not shown not
+                # displayed unless the corresponding test fails
                 #
-                # I don't like it, so I prefer to handle warnings here.
+                # But we want to see the warnings, even with --buffered,
+                # until they are explicitly disabled.
+                #
+                # So the run(warning=None), and we handle all the warnings
+                # manually
 
                 set_warnings_filter(
                     PythonWarningsArgs.ignore
@@ -234,8 +246,7 @@ def run(
                 result = TextTestRunner(buffer=buffer,
                                         verbosity=verbosity.value,
                                         failfast=failfast,
-                                        warnings=None).run(
-                    combo_suite)
+                                        warnings=None).run(combo_suite)
 
                 caught_warnings = list(catcher)
 
@@ -251,6 +262,18 @@ def run(
                                                         lineno=w.lineno,
                                                         line=w.line))
 
+            if json:
+                temp_mute.unmute()
+
+                print(dumps({
+                    'run': result.testsRun,
+                    'skipped': len(result.skipped),
+                    'failures': len(result.failures),
+                    'errors': len(result.errors),
+                    'unexpected_successes': len(result.unexpectedSuccesses),
+                    'warnings': len(caught_warnings) if caught_warnings else 0
+                }))
+
             if exit_if_failed:
                 if not result.wasSuccessful():
                     raise TestsError
@@ -260,7 +283,8 @@ def run(
             return RunResult(result, caught_warnings)
 
         except NeatestError as e:
-            print(e.message)
+            if not json:
+                print(e.message)
             if exit_if_failed:
                 sys.exit(1)
             else:
@@ -270,18 +294,8 @@ def run(
         # with unittest.TestProgram(module=None, argv)
         # where argv is ['python -m unittest', 'discover', ...]
     finally:
-        if json:
-            sys.stdout = old_stdout
-            sys.stderr = old_stderr
-
-            if result:
-                print(dumps({
-                    'run': result.testsRun,
-                    'skipped': len(result.skipped),
-                    'failures': len(result.failures),
-                    'errors': len(result.errors),
-                    'unexpected_successes': len(result.unexpectedSuccesses),
-                }))
+        if temp_mute:
+            temp_mute.unmute()
 
 
 def print_version():
@@ -342,14 +356,16 @@ def main_entry_point():
     #                     action='store_true',
     #                     help='Catch Ctrl-C and display results so far')
 
-    parser.add_argument('-b', '--buffer', dest='buffer',
-                        action='store_true',
-                        help='Buffer stdout and stderr during tests')
+    # parser.add_argument('-b', '--buffer', dest='buffer',
+    #                     action='store_true',
+    #                     help='Buffer stdout and stderr during tests')
 
     parser.add_argument('--json', dest='json',
                         action='store_true',
                         default=False,
-                        help='Print only brief statistics in JSON format')
+                        help=argparse.SUPPRESS
+                        # help='Print only brief statistics in JSON format'
+                        )
 
     parser.add_argument('-w', '--warnings', dest='warnings',
                         choices=[Warnings.print.value,
@@ -370,7 +386,7 @@ def main_entry_point():
         start_directory=args.start,
         pattern=args.pattern,
         verbosity=Verbosity(args.verbosity or default_verbosity),
-        buffer=args.buffer,
+        buffer=True,
         failfast=args.failfast,
         warnings=Warnings(args.warnings),
         json=args.json)
