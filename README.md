@@ -23,8 +23,8 @@ $ neatest
 ```
 
 ```
-Module "module_a" contains 3 tests
-Module "module_b" contains 4 tests
+Module "package_a" contains 3 tests
+Module "package_b" contains 4 tests
 Module "tests" contains 16 tests
 .....
 ----------------------------------------------------------------------
@@ -37,13 +37,13 @@ It works well for the project layout like that:
 
 ```
 my_project
-    module_a
+    package_a
         __init__.py
         any_files.py
         can_contain.py
         tests_inside.py
         ...
-    module_b
+    package_b
         __init__.py
         ...
     tests  
@@ -114,17 +114,18 @@ inside `top_level_directory` and will run tests for each of them.
 
 ```
 top_level_directory
-  module_a              # module_a will be tested
+  package_a              # tests in package_a will be discovered
     __init__.py
-  module_b              # module_b will be tested
+  package_b              # tests in package_b will be discovered
     __init__.py
-  module_c              # module_c will be tested
+  package_c              # tests in package_c will be discovered
     __init__.py
-    submodule           # submodule will be tested as a part of module_c 
-      __init__.py         
-  subdir                # subdir is not a module
-      module_d          # module_d will NOT be tested 
-        __init__.py     # because it is not importable     
+    subpackage           # subpackage is a part of package_c 
+      __init__.py        # so tests will be discovered
+      ...
+  subdir                # subdir is not a package
+      package_d         # tests in package_d will NOT be discovered  
+        __init__.py     # because it is not importable    
   setup.py
 ```
 
@@ -139,8 +140,8 @@ is the same as running
 
 ``` bash
 $ cd top_level_directory
-$ python3 -m unittest discover -t . -s module_a -p "*.py"
-$ python3 -m unittest discover -t . -s module_b -p "*.py"
-$ python3 -m unittest discover -t . -s module_c -p "*.py"
+$ python3 -m unittest discover -t . -s package_a -p "*.py"
+$ python3 -m unittest discover -t . -s package_b -p "*.py"
+$ python3 -m unittest discover -t . -s package_c -p "*.py"
 ```
 
