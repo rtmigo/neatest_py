@@ -14,8 +14,11 @@ class TestMyTest(unittest.TestCase):
         self.assertEqual(names('b_in_a'), ['a'])
         self.assertEqual(names('only_c'), ['c'])
         self.assertEqual(names('flat'), ['flat'])
+        self.assertEqual(names('with_invisible'), ['find_me'])
+
         with self.assertRaises(ModulesNotFoundError):
             names('complicated')
+
 
     def test_start_directory(self):
         neatest.run(start_directory='tests', exit_if_failed=False)
