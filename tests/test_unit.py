@@ -9,6 +9,17 @@ import neatest
 from neatest.neatest import ModulesNotFoundError
 
 
+def _pip_uninstall(package: str):
+    subprocess.run([sys.executable, '-m', 'pip', 'uninstall', package, '-y'],
+                   capture_output=True)
+
+
+def _pip_is_installed(package: str) -> bool:
+    return subprocess.run(
+        [sys.executable, '-m', 'pip', 'show', package],
+        capture_output=True).returncode == 0
+
+
 def _run(add_args: List[str] = None, cwd: Optional[Path] = None):
     env = os.environ.copy()
     package_dir = Path(__file__).parent.parent
@@ -38,7 +49,7 @@ class TestsProcess(unittest.TestCase):
 
     def test_pattern(self):
         completed = _run(["--json"], cwd=sample_project_path('tests'))
-        #print('['+completed.stdout+']')
+        # print('['+completed.stdout+']')
         d = json.loads(completed.stdout)
         self.assertEqual(d['run'], 7)
 
@@ -76,6 +87,26 @@ class TestsProcess(unittest.TestCase):
                          cwd=sample_project_path('resource_warning'))
         self.assertEqual(completed.returncode, 0)
         self.assertTrue("ResourceWarning" not in completed.stdout)
+
+    def test_require(self):
+        _pip_uninstall('requests')
+        _pip_uninstall('beautifulsoup4')
+
+        self.assertFalse(_pip_is_installed('beautifulsoup4'))
+        self.assertFalse(_pip_is_installed('requests'))
+
+        c = _run(["-r", "requests", "-r", "beautifulsoup4"],
+             cwd=sample_project_path('flat'))
+        self.assertEqual(c.returncode, 0)
+        self.assertTrue(_pip_is_installed('beautifulsoup4'))
+        self.assertTrue(_pip_is_installed('requests'))
+
+        c = _run(["-r", "requests", "-r", "beautifulsoup4"],
+             cwd=sample_project_path('flat'))
+        self.assertEqual(c.returncode, 0)
+        self.assertTrue(_pip_is_installed('beautifulsoup4'))
+        self.assertTrue(_pip_is_installed('requests'))
+
 
 
 class TestMyTest(unittest.TestCase):
