@@ -7,11 +7,13 @@ import subprocess
 import io
 import sys
 from enum import Enum, IntEnum
-from typing import List, Optional, Union, Tuple
+from typing import List, Optional, Union, Tuple, NamedTuple
 import unittest
 from pathlib import Path
 import neatest.constants
 from unittest import TextTestRunner, TestSuite, TestLoader, TestResult
+from warnings import catch_warnings, WarningMessage
+import warnings as warnings_module
 
 
 class NeatestError(Exception):
@@ -26,7 +28,12 @@ class InstallationError(NeatestError):
 
 class TestsError(NeatestError):
     def __init__(self):
-        super().__init__("Testing was unsuccessful.")
+        super().__init__("Testing failed.")
+
+
+class WarningsError(NeatestError):
+    def __init__(self):
+        super().__init__("Testing failed due to warnings.")
 
 
 class ModulesNotFoundError(NeatestError):
@@ -62,7 +69,7 @@ def find_start_dirs(start_from: Path = None) -> List[Path]:
     return dirs
 
 
-class Warnings(Enum):
+class PythonWarningsArgs(Enum):
     # https://www.geeksforgeeks.org/warnings-in-python/
     default = "default"
     error = "error"
@@ -70,6 +77,12 @@ class Warnings(Enum):
     always = "always"
     module = "module"
     once = "once"
+
+
+class Warnings(Enum):
+    ignore = "ignore"
+    print = "print"
+    fail = "fail"
 
 
 class Verbosity(IntEnum):
@@ -92,6 +105,30 @@ default_pattern = '*.py'
 default_top_level_dir = '.'
 default_start_directory = None
 default_verbosity = Verbosity.normal
+default_warnings_handling = Warnings.print
+
+
+class RunResult(NamedTuple):
+    tests: TestResult
+    warnings: List[WarningMessage]
+
+
+def set_warnings_filter(w: PythonWarningsArgs):
+    # the same as TextTestRunner.run in Python 3.9.
+    # Comments are preserved
+    if w is not None:
+        # if self.warnings is set, use it to filter all the warnings
+        warnings_module.simplefilter(w.value)
+        # if the filter is 'default' or 'always', special-case the
+        # warnings from the deprecated unittest methods to show them
+        # no more than once per module, because they can be fairly
+        # noisy.  The -Wd and -Wa flags can be used to bypass this
+        # only when self.warnings is None.
+        if w in [PythonWarningsArgs.default, PythonWarningsArgs.always]:
+            warnings_module.filterwarnings(
+                'module',
+                category=DeprecationWarning,
+                message=r'Please use assert\w+ instead.')
 
 
 def run(
@@ -104,9 +141,9 @@ def run(
         failfast=False,
         verbosity=default_verbosity,
         exit_if_failed=True,
-        warnings: Warnings = Warnings.default,
+        warnings: Warnings = default_warnings_handling,
         json=False,
-) -> unittest.TestResult:
+) -> RunResult:
     """Discovers and runs unit tests for module or modules.
 
     tests_require: Dependent modules to install with `pip install` before
@@ -181,14 +218,46 @@ def run(
 
             combo_suite = TestSuite(suites)
 
-            result = TextTestRunner(buffer=buffer,
-                                    verbosity=verbosity.value,
-                                    failfast=failfast,
-                                    warnings=warnings.value).run(combo_suite)
+            with catch_warnings(record=True) as catcher:
 
-            if exit_if_failed and not result.wasSuccessful():
-                raise TestsError
-            return result
+                # with the default unittest, even if warnings are enabled, the
+                # --buffer argument makes them invisible: these warnings are
+                # printed and not displayed unless the corresponding test fails
+                #
+                # I don't like it, so I prefer to handle warnings here.
+
+                set_warnings_filter(
+                    PythonWarningsArgs.ignore
+                    if warnings == Warnings.ignore
+                    else PythonWarningsArgs.default)
+
+                result = TextTestRunner(buffer=buffer,
+                                        verbosity=verbosity.value,
+                                        failfast=failfast,
+                                        warnings=None).run(
+                    combo_suite)
+
+                caught_warnings = list(catcher)
+
+            if caught_warnings:
+                print()
+                print(splitter)
+                print(f"Caught {len(caught_warnings)} warnings:")
+                for w in caught_warnings:
+                    print()
+                    print(warnings_module.formatwarning(message=w.message,
+                                                        category=w.category,
+                                                        filename=w.filename,
+                                                        lineno=w.lineno,
+                                                        line=w.line))
+
+            if exit_if_failed:
+                if not result.wasSuccessful():
+                    raise TestsError
+                if warnings == Warnings.fail and caught_warnings:
+                    raise WarningsError
+
+            return RunResult(result, caught_warnings)
 
         except NeatestError as e:
             print(e.message)
@@ -282,6 +351,14 @@ def main_entry_point():
                         default=False,
                         help='Print only brief statistics in JSON format')
 
+    parser.add_argument('-w', '--warnings', dest='warnings',
+                        choices=[Warnings.print.value,
+                                 Warnings.ignore.value,
+                                 Warnings.fail.value],
+                        default=default_warnings_handling.value,
+                        help=f'How to handle the warnings '
+                             f'(default: {default_warnings_handling.value}).')
+
     # parser.add_argument('-k', dest='testNamePatterns',
     #                     action='append',
     #                     type=FromUnittestMain.convert_select_pattern,
@@ -295,4 +372,5 @@ def main_entry_point():
         verbosity=Verbosity(args.verbosity or default_verbosity),
         buffer=args.buffer,
         failfast=args.failfast,
+        warnings=Warnings(args.warnings),
         json=args.json)
