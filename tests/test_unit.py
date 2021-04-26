@@ -38,6 +38,7 @@ class TestsProcess(unittest.TestCase):
 
     def test_pattern(self):
         completed = _run(["--json"], cwd=sample_project_path('tests'))
+        #print('['+completed.stdout+']')
         d = json.loads(completed.stdout)
         self.assertEqual(d['run'], 7)
 
