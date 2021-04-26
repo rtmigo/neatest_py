@@ -15,7 +15,7 @@ pip3 install neatest
 
 # Run
 
-## Run tests from shell
+## Run tests from terminal
 
 ``` bash
 $ cd my_project
@@ -39,7 +39,7 @@ It works well for the project layout like that:
 my_project
     module_a
         __init__.py
-        these_files.py
+        any_files.py
         can_contain.py
         tests_inside.py
         ...
@@ -52,7 +52,7 @@ my_project
         test_anything.py
 ```
 
-## Run tests with .py script
+## Run tests from .py script
 
 #### Create run_tests.py
 
