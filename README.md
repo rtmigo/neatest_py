@@ -2,39 +2,10 @@
 
 Runs unit tests with standard Python `unittest` module.
 
-Automates test discovery so that all `TestCase`s inside the project
-directory are found.
+Automates test discovery.
 
-Can be conveniently invoked from Python code as `neatest.run(...)` instead of
+Can be conveniently invoked from Python code as `neatest.run(...)` method instead of
 running `python -m unittest discover ...` in shell.
-
-# Why
-
-Testing should be simple. One-line command. A really short line.
-
-`python -m unittest discover ...` is too long.
-
-`run_tests.sh` is better. But not pythonic and not cross-platform.
-
-`run_tests.py` is much better.
-
-For example, if your command looks like this
-
-``` bash 
-$ python -m unittest discover -s ./mymodule -p '*_test.py' -t '.'
-```
-
-you can replace it with `run_tests.py`:
-
-``` python3
-from neatest import run
-
-run( pattern = "*_test.py",
-     start_directory = "./mymodule" )
-```
-
-This script can be run with `python3 run_tests.py`. Now the command is short and
-cross-platform.
 
 # Install
 
@@ -44,41 +15,74 @@ pip3 install neatest
 
 # Run
 
-## Run tests with .py script
-
-#### project_dir / run_tests.py
-
-``` python3
-import neatest
-
-if __name__ == "__main__":
-    # all arguments are optional
-    neatest.run( pattern = '*_test.py'
-                 verbosity = neatest.Verbosity.quiet )
-```
-
-#### Terminal
+## Run tests from shell
 
 ``` bash
-$ python3 run_tests.py
-```
-
-## Run tests from terminal
-
-``` bash
+$ cd my_project
 $ neatest
 ```
 
-is equivalent to running the script
+```
+Module "module_a" contains 3 tests
+Module "module_b" contains 4 tests
+Module "tests" contains 16 tests
+.....
+----------------------------------------------------------------------
+Ran 23 tests in 2.947s
+
+OK
+```
+
+It works well for the project layout like that:
+
+```
+my_project
+    module_a
+        __init__.py
+        these_files.py
+        can_contain.py
+        tests_inside.py
+        ...
+    module_b
+        __init__.py
+        ...
+    tests  
+        __init__.py
+        test_something.py
+        test_anything.py
+```
+
+## Run tests with .py script
+
+#### Create run_tests.py
 
 ``` python3
 import neatest
 neatest.run()
 ```
 
+#### Run command
+
+``` bash
+$ cd my_project
+$ python3 path/to/run_tests.py
+```
+
+The idea behind creating a script is to eliminate the need to create other
+`.sh`, `.bat` or config files for the testing. All the information you need to
+run tests is contained in single executable `.py` file. It is short and portable 
+as the Python itself.
+
+``` python3
+import neatest
+neatest.run(tests_require=['requests'],
+            buffer=True,
+            verbosity=neatest.Verbosity.verbose)
+```
+
 # Arguments
 
-Most of the arguments to the `neatest.run` method have the same names and
+Most of the arguments to the `neatest.run(...)` method have the same names and
 meanings as the arguments
 of [unittest](https://docs.python.org/3/library/unittest.html#command-line-interface)
 and [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery)
@@ -88,13 +92,13 @@ and [unittest discover](https://docs.python.org/3/library/unittest.html#test-dis
 
 The test discovery has different defaults than the
 standard [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery)
-.
+. It may discover more `TestCase`s than the standard. 
 
 ## Filenames
 
 `neatest` searches for tests in all `*.py` files.
 
-So the default filename `pattern` is equivalent to setting `-p` like that:
+The same can be achieved with standard `unittest` like this:
 
 ``` bash
 $ python3 -m unittest discover -p "*.py"
