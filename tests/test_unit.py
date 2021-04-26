@@ -42,10 +42,10 @@ class TestsProcess(unittest.TestCase):
         d = json.loads(completed.stdout)
         self.assertEqual(d['run'], 7)
 
-        completed = _run(["-p", "test_*.py", "--json"],
-                         cwd=sample_project_path('tests'))
-        d = json.loads(completed.stdout)
-        self.assertEqual(d['run'], 5)
+        # completed = _run(["-p", "test_*.py", "--json"],
+        #                  cwd=sample_project_path('tests'))
+        # d = json.loads(completed.stdout)
+        # self.assertEqual(d['run'], 5)
 
     def test_project_flat(self):
         completed = _run(["--json"], cwd=sample_project_path('flat'))

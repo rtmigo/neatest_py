@@ -148,10 +148,10 @@ class TempMute:
 
 def run(
         tests_require: Optional[List[str]] = None,
-        pattern: str = default_pattern,
+        #pattern: str = default_pattern,
         start_directory: Optional[
             Union[str, List[str]]] = default_start_directory,
-        top_level_directory: Optional[str] = default_top_level_dir,
+        #top_level_directory: Optional[str] = default_top_level_dir,
         buffer=False,
         failfast=False,
         verbosity=default_verbosity,
@@ -184,6 +184,9 @@ def run(
 
     verbosity: 0 for quiet, 2 for verbose.
     """
+
+    top_level_directory = default_top_level_dir
+    pattern = default_pattern
 
     result: Optional[TestResult] = None
 
@@ -322,21 +325,21 @@ def main_entry_point():
     #                  'importable from the top level directory of the '
     #                  'project.')
 
-    parser.add_argument('-t', '--top-level-directory', dest='top',
-                        default=default_top_level_dir,
-                        help=f"Top level directory of project "
-                             f"('{default_top_level_dir}' default). All test "
-                             f"modules must be importable from this directory")
+    # parser.add_argument('-t', '--top-level-directory', dest='top',
+    #                     default=default_top_level_dir,
+    #                     help=f"Top level directory of project "
+    #                          f"('{default_top_level_dir}' default). All test "
+    #                          f"modules must be importable from this directory")
 
     parser.add_argument('-s', '--start-directory', dest='start',
                         default=default_start_directory,
                         help="Directory with a package containing the tests. "
-                             "If not specified, it will be found automatically "
-                             "inside the top-level-directory")
-    parser.add_argument('-p', '--pattern', dest='pattern',
-                        default=default_pattern,
-                        help="Pattern for filenames containing the "
-                             f"tests ('{default_pattern}' default)")
+                             "If not specified, the packages will be found "
+                             "automatically inside the current directory")
+    # parser.add_argument('-p', '--pattern', dest='pattern',
+    #                     default=default_pattern,
+    #                     help="Pattern for filenames containing the "
+    #                          f"tests ('{default_pattern}' default)")
 
     parser.add_argument('-v', '--verbose', dest='verbosity',
                         action='store_const', const=2,
@@ -372,8 +375,15 @@ def main_entry_point():
                                  Warnings.ignore.value,
                                  Warnings.fail.value],
                         default=default_warnings_handling.value,
-                        help=f'How to handle the warnings '
-                             f'(default: {default_warnings_handling.value}).')
+                        help=f"Way to handle warnings "
+                             f"(default: '{default_warnings_handling.value}')")
+
+    parser.add_argument('--version',
+                        action='store_true',
+                        default=False,
+                        help="Show version info and exit"
+                        # help='Print only brief statistics in JSON format'
+                        )
 
     # parser.add_argument('-k', dest='testNamePatterns',
     #                     action='append',
@@ -382,9 +392,9 @@ def main_entry_point():
 
     args = parser.parse_args()
 
-    run(top_level_directory=args.top,
+    run(#top_level_directory=args.top,
         start_directory=args.start,
-        pattern=args.pattern,
+        #pattern=args.pattern,
         verbosity=Verbosity(args.verbosity or default_verbosity),
         buffer=True,
         failfast=args.failfast,
