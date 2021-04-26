@@ -106,14 +106,14 @@ $ python3 -m unittest discover -p "*.py"
 
 ## Directories
 
-`neatest` assumes, that the current directory is the `top_level_directory`. It
+`neatest` assumes, that the current directory is the project directory. It
 is the base directory for all imports.
 
-If the `start_directory` are not specified, `neatest` will find all the modules
-inside `top_level_directory` and will run tests for each of them.
+If the `start_directory` are not specified, `neatest` will find all the packages
+inside the project directory and will run tests for each of them.
 
 ```
-top_level_directory
+my_project
   package_a              # tests in package_a will be discovered
     __init__.py
   package_b              # tests in package_b will be discovered
@@ -132,16 +132,25 @@ top_level_directory
 So running
 
 ``` bash
-$ cd top_level_directory
+$ cd my_project
 $ neatest
 ```
 
-is the same as running
+will perform the same tests as
 
 ``` bash
-$ cd top_level_directory
+$ cd my_project
 $ python3 -m unittest discover -t . -s package_a -p "*.py"
 $ python3 -m unittest discover -t . -s package_b -p "*.py"
 $ python3 -m unittest discover -t . -s package_c -p "*.py"
 ```
 
+For simple project structure it will work as well:
+
+```
+my_project
+    __init__.py
+    test_a.py       # we will run tests declared here
+    test_b.py       # we will run tests declared here
+    anything.py     # we will run tests declared here
+```
