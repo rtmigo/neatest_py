@@ -29,7 +29,7 @@ def _run(add_args: List[str] = None, cwd: Optional[Path] = None):
         [sys.executable, '-m', 'neatest'] + (add_args or []),
         env=env,
         cwd=str(cwd) if cwd else None,
-        capture_output=True, encoding="utf-8")
+        capture_output=True, encoding="utf-8", universal_newlines=True)
     return res
 
 
