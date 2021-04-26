@@ -148,10 +148,8 @@ class TempMute:
 
 def run(
         tests_require: Optional[List[str]] = None,
-        #pattern: str = default_pattern,
         start_directory: Optional[
             Union[str, List[str]]] = default_start_directory,
-        #top_level_directory: Optional[str] = default_top_level_dir,
         buffer=False,
         failfast=False,
         verbosity=default_verbosity,
@@ -187,8 +185,6 @@ def run(
 
     top_level_directory = default_top_level_dir
     pattern = default_pattern
-
-    result: Optional[TestResult] = None
 
     temp_mute = TempMute() if json else None
 
@@ -321,25 +317,15 @@ def main_entry_point():
 
     parser = argparse.ArgumentParser()
 
-    # parser.epilog = ('For test discovery all test modules must be '
-    #                  'importable from the top level directory of the '
-    #                  'project.')
-
-    # parser.add_argument('-t', '--top-level-directory', dest='top',
-    #                     default=default_top_level_dir,
-    #                     help=f"Top level directory of project "
-    #                          f"('{default_top_level_dir}' default). All test "
-    #                          f"modules must be importable from this directory")
-
     parser.add_argument('-s', '--start-directory', dest='start',
                         default=default_start_directory,
                         help="Directory with a package containing the tests. "
                              "If not specified, the packages will be found "
                              "automatically inside the current directory")
-    # parser.add_argument('-p', '--pattern', dest='pattern',
-    #                     default=default_pattern,
-    #                     help="Pattern for filenames containing the "
-    #                          f"tests ('{default_pattern}' default)")
+
+    parser.add_argument('-r', '--require', action='append',
+                        help='Packages to be installed with [pip install] '
+                             'before running tests')
 
     parser.add_argument('-v', '--verbose', dest='verbosity',
                         action='store_const', const=2,
@@ -355,20 +341,11 @@ def main_entry_point():
                         action='store_true',
                         help='Stop on first fail or error')
 
-    # parser.add_argument('-c', '--catch', dest='catchbreak',
-    #                     action='store_true',
-    #                     help='Catch Ctrl-C and display results so far')
-
-    # parser.add_argument('-b', '--buffer', dest='buffer',
-    #                     action='store_true',
-    #                     help='Buffer stdout and stderr during tests')
-
     parser.add_argument('--json', dest='json',
                         action='store_true',
                         default=False,
-                        help=argparse.SUPPRESS
-                        # help='Print only brief statistics in JSON format'
-                        )
+                        # 'Print only brief statistics in JSON format'
+                        help=argparse.SUPPRESS)
 
     parser.add_argument('-w', '--warnings', dest='warnings',
                         choices=[Warnings.print.value,
@@ -392,9 +369,8 @@ def main_entry_point():
 
     args = parser.parse_args()
 
-    run(#top_level_directory=args.top,
-        start_directory=args.start,
-        #pattern=args.pattern,
+    run(start_directory=args.start,
+        tests_require=args.require,
         verbosity=Verbosity(args.verbosity or default_verbosity),
         buffer=True,
         failfast=args.failfast,
