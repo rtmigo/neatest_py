@@ -48,8 +48,33 @@ class TestsProcess(unittest.TestCase):
 
     def test_project_flat(self):
         completed = _run(["--json"], cwd=sample_project_path('flat'))
+        # print("ZZZZ", completed.stdout)
         d = json.loads(completed.stdout)
+
         self.assertEqual(d['run'], 5)
+
+    def test_project_warning_default(self):
+        completed = _run([], cwd=sample_project_path('resource_warning'))
+        self.assertEqual(completed.returncode, 0)
+        self.assertTrue("ResourceWarning" in completed.stdout)
+
+    def test_project_warning_print(self):
+        completed = _run(["-w", "print"],
+                         cwd=sample_project_path('resource_warning'))
+        self.assertEqual(completed.returncode, 0)
+        self.assertTrue("ResourceWarning" in completed.stdout)
+
+    def test_project_warning_fail(self):
+        completed = _run(["-w", "fail"],
+                         cwd=sample_project_path('resource_warning'))
+        self.assertTrue("ResourceWarning" in completed.stdout)
+        self.assertNotEqual(completed.returncode, 0)
+
+    def test_project_warning_ignore(self):
+        completed = _run(["--json", "-w", "ignore"],
+                         cwd=sample_project_path('resource_warning'))
+        self.assertEqual(completed.returncode, 0)
+        self.assertTrue("ResourceWarning" not in completed.stdout)
 
 
 class TestMyTest(unittest.TestCase):
