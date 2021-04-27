@@ -69,7 +69,7 @@ import tests
 
 # Run
 
-## Run tests from terminal
+## Run tests from command line
 
 ``` bash
 $ cd my_complex_project
@@ -87,38 +87,48 @@ Ran 23 tests in 2.947s
 OK
 ```
 
-Add some command line options:
+Add some options:
 
 ``` bash
 $ cd my_complex_project
-$ neatest -r requests -r lxml --warnings fail
+$ neatest --start-directory tests --verbose
 ```
+
+See all possible options:
+
+``` bash
+$ neatest --help
+```
+
 
 ## Run tests from .py script
 
-#### Create run_tests.py
+#### Create a script
+
+For example, `run_tests.py`:
 
 ``` python3
 import neatest
 neatest.run()
 ```
 
-#### Run command
+#### Run the script
 
 ``` bash
 $ cd my_complex_project
 $ python3 path/to/run_tests.py
 ```
 
-The idea behind creating a script is to eliminate the need to create other
-`.sh`, `.bat` or config files for the testing. All the information you need to
-run tests is contained in single executable `.py` file. It is short and portable
-as the Python itself.
+The idea is to use single `.py` script to run the tests (instead of `.sh`, `.bat` or `.cfg`). 
+Python script is readable, and it's portable as the Python itself.
+
+You can specify all the options available to `neatest` command-line tool as 
+arguments to `neatest.run` method:
 
 ``` python3
 import neatest
-neatest.run(tests_require=['requests', 'lxml'],
-            warnings=neatest.Warnings.fail)
+neatest.run(start_directory="tests",
+            verbosity=neatest.Verbosity.verbose)
 ```
 
 # Arguments
@@ -129,13 +139,12 @@ You can specify dependencies to be installed with `pip install` before testing.
 These dependencies are presumably missing from `requirements.txt` and `setup.py`
 as they are not needed in production.
 
-#### In terminal
+``` python
+neatest.run(tests_require=['requests', 'lxml']) 
+```
+
 ``` bash
 $ neatest -r requests -r lxml
-```
-#### In .py script
-``` python
-neatest.run(tests_require=['requests', 'lxml'])
 ```
 
 This is the equivalent of the deprecated argument `tests_require`
@@ -145,30 +154,32 @@ from `setuptools.setup`.
 
 By default, warnings caught during testing are printed to the stdout.
 
-### Ignore warnings
+### warnings: ignore
 
-In this mode they will not be displayed:
-
-``` bash
-$ neatest -w ignore
-```
+In this mode warnings will not be displayed.
 
 ``` python
 neatest.run(warnings=neatest.Warnings.ignore)
 ```
-
-### Fail on warnings
-
-Warnings will be treated as errors. If at least one warning appears during testing,
-it will cause the testing to fail (with exception or non-zero return code).
-
 ``` bash
-$ neatest -w fail
+$ neatest --warnings ignore
 ```
+
+
+
+### warnings: fail
+
+In this mode warnings will be treated as errors. If at least one warning appears
+during testing, it will cause the testing to fail (with exception or non-zero
+return code).
 
 ``` python
 neatest.run(warnings=neatest.Warnings.fail)
 ```
+``` bash
+$ neatest --warnings fail
+```
+
 
 # Test discovery
 
