@@ -121,7 +121,54 @@ neatest.run(tests_require=['requests', 'lxml'],
             warnings=neatest.Warnings.fail)
 ```
 
+# Arguments
 
+## tests_require
+
+You can specify dependencies to be installed with `pip install` before testing.
+These dependencies are presumably missing from `requirements.txt` and `setup.py`
+as they are not needed in production.
+
+#### In terminal
+``` bash
+$ neatest -r requests -r lxml
+```
+#### In .py script
+``` python
+neatest.run(tests_require=['requests', 'lxml'])
+```
+
+This is the equivalent of the deprecated argument `tests_require`
+from `setuptools.setup`.
+
+# warnings
+
+By default, warnings caught during testing are printed to the stdout.
+
+### Ignore warnings
+
+In this mode they will not be displayed:
+
+``` bash
+$ neatest -w ignore
+```
+
+``` python
+neatest.run(warnings=neatest.Warnings.ignore)
+```
+
+### Fail on warnings
+
+Warnings will be treated as errors. If at least one warning appears during testing,
+it will cause the testing to fail (with exception or non-zero return code).
+
+``` bash
+$ neatest -w fail
+```
+
+``` python
+neatest.run(warnings=neatest.Warnings.fail)
+```
 
 # Test discovery
 
@@ -156,7 +203,7 @@ my_project
             ...
     subdir                  # subdir is not a package
         package_d           # tests in package_d will NOT be discovered  
-            __init__.py     # because it is not importable    
+            __init__.py     # because package_d is not importable    
   setup.py
 ```
 
@@ -175,3 +222,5 @@ $ python3 -m unittest discover -t . -s package_a -p "*.py"
 $ python3 -m unittest discover -t . -s package_b -p "*.py"
 $ python3 -m unittest discover -t . -s package_c -p "*.py"
 ```
+
+
