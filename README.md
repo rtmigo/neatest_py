@@ -50,7 +50,7 @@ my_complex_project
         test_anything.py    # tests can be placed here        
 ```
 
-Directories must be **importable** as packages from the project directory.
+Subdirectories must be **importable** as packages from the project directory.
 
 They are importable, when you can
 
@@ -207,14 +207,14 @@ my_project
   setup.py
 ```
 
-So running
+So the commands
 
 ``` bash
 $ cd my_project
 $ neatest
 ```
 
-will perform the same tests as
+will run the same tests as
 
 ``` bash
 $ cd my_project
