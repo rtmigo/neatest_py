@@ -12,8 +12,7 @@ import unittest
 from pathlib import Path
 import neatest.constants
 from unittest import TextTestRunner, TestSuite, TestLoader, TestResult
-from warnings import catch_warnings, WarningMessage
-import warnings as warnings_module
+import warnings as wrn
 
 
 class NeatestError(Exception):
@@ -110,7 +109,7 @@ default_warnings_handling = Warnings.print
 
 class RunResult(NamedTuple):
     tests: TestResult
-    warnings: List[WarningMessage]
+    warnings: List[wrn.WarningMessage]
 
 
 def set_warnings_filter(w: PythonWarningsArgs):
@@ -118,14 +117,14 @@ def set_warnings_filter(w: PythonWarningsArgs):
     # Comments are preserved
     if w is not None:
         # if self.warnings is set, use it to filter all the warnings
-        warnings_module.simplefilter(w.value)
+        wrn.simplefilter(w.value)
         # if the filter is 'default' or 'always', special-case the
         # warnings from the deprecated unittest methods to show them
         # no more than once per module, because they can be fairly
         # noisy.  The -Wd and -Wa flags can be used to bypass this
         # only when self.warnings is None.
         if w in [PythonWarningsArgs.default, PythonWarningsArgs.always]:
-            warnings_module.filterwarnings(
+            wrn.filterwarnings(
                 'module',
                 category=DeprecationWarning,
                 message=r'Please use assert\w+ instead.')
@@ -224,7 +223,7 @@ def run(
 
             combo_suite = TestSuite(suites)
 
-            with catch_warnings(record=True) as catcher:
+            with wrn.catch_warnings(record=True) as catcher:
 
                 # with the default unittest, even if warnings are enabled, the
                 # --buffer argument makes them invisible: warnings are
@@ -255,11 +254,11 @@ def run(
                 print(f"Caught {len(caught_warnings)} warnings:")
                 for w in caught_warnings:
                     print()
-                    print(warnings_module.formatwarning(message=w.message,
-                                                        category=w.category,
-                                                        filename=w.filename,
-                                                        lineno=w.lineno,
-                                                        line=w.line))
+                    print(wrn.formatwarning(message=w.message,
+                                            category=w.category,
+                                            filename=w.filename,
+                                            lineno=w.lineno,
+                                            line=w.line))
 
             if json:
                 temp_mute.unmute()
@@ -324,15 +323,20 @@ def main_entry_point():
                              "automatically inside the current directory")
 
     parser.add_argument('-r', '--require', action='append',
-                        help='Packages to be installed with [pip install] '
-                             'before running tests')
+                        help="Packages to be installed with 'pip install' "
+                             "before running tests. "
+                             "(e.g. '-r requests -r lmxl')")
 
-    parser.add_argument('-v', '--verbose', dest='verbosity',
-                        action='store_const', const=2,
-                        help='Verbose output')
-    parser.add_argument('-q', '--quiet', dest='verbosity',
-                        action='store_const', const=0,
-                        help='Quiet output')
+    group = parser.add_mutually_exclusive_group()
+    # group.add_argument("-v", "--verbose", action="store_true")
+    # group.add_argument("-q", "--quiet", action="store_true")
+
+    group.add_argument('-v', '--verbose', dest='verbosity',
+                       action='store_const', const=2,
+                       help='Verbose output')
+    group.add_argument('-q', '--quiet', dest='verbosity',
+                       action='store_const', const=0,
+                       help='Quiet output')
     # parser.add_argument('--locals', dest='tb_locals',
     #                     action='store_true',
     #                     help='Show local variables in tracebacks')
