@@ -4,8 +4,8 @@ Runs unit tests with standard Python `unittest` module.
 
 Automates test discovery.
 
-Can be conveniently invoked from Python code as `neatest.run(...)` method instead of
-running `python -m unittest discover ...` in shell.
+Can be conveniently invoked from Python code as `neatest.run(...)` method
+instead of running `python -m unittest discover ...` in shell.
 
 # Install
 
@@ -13,12 +13,66 @@ running `python -m unittest discover ...` in shell.
 pip3 install neatest
 ```
 
+# Project layout
+
+`neatest` discovers all classes inherited from `unittest.TestCase` within the
+project. Test cases can be placed in **any .py file** inside **any directory**.
+If you prefer to keep test cases in the "tests" directory with filenames
+starting with "test", they will be discovered, because they are also "any
+files in any directory".
+
+You can use a simple project layout:
+
+```
+my_simple_project
+    __init__.py     # tests can be placed here
+    test_a.py       # tests can be placed here
+    test_b.py       # tests can be placed here
+    anything.py     # tests can be placed here
+```
+
+or a project with multiple packages:
+
+```
+my_complex_project
+    package_a
+        __init__.py         # tests can be placed here
+        any_files.py        # tests can be placed here
+        can_contain.py      # tests can be placed here
+        tests_inside.py     # tests can be placed here
+        ...
+    package_b
+        __init__.py         # tests can be placed here
+        ...
+    tests  
+        __init__.py         # tests can be placed here
+        test_something.py   # tests can be placed here
+        test_anything.py    # tests can be placed here        
+```
+
+Directories must be **importable** as packages from the project directory.
+
+They are importable, when you can
+
+``` bash
+$ cd my_complex_project
+$ python3 
+```
+
+and then in Python
+
+``` python3
+import package_a
+import package_b
+import tests 
+```
+
 # Run
 
 ## Run tests from terminal
 
 ``` bash
-$ cd my_project
+$ cd my_complex_project
 $ neatest
 ```
 
@@ -33,23 +87,11 @@ Ran 23 tests in 2.947s
 OK
 ```
 
-It works well for the project layout like that:
+Add some command line options:
 
-```
-my_project
-    package_a
-        __init__.py
-        any_files.py
-        can_contain.py
-        tests_inside.py
-        ...
-    package_b
-        __init__.py
-        ...
-    tests  
-        __init__.py
-        test_something.py
-        test_anything.py
+``` bash
+$ cd my_complex_project
+$ neatest -r requests -r lxml --warnings fail
 ```
 
 ## Run tests from .py script
@@ -64,35 +106,24 @@ neatest.run()
 #### Run command
 
 ``` bash
-$ cd my_project
+$ cd my_complex_project
 $ python3 path/to/run_tests.py
 ```
 
 The idea behind creating a script is to eliminate the need to create other
 `.sh`, `.bat` or config files for the testing. All the information you need to
-run tests is contained in single executable `.py` file. It is short and portable 
+run tests is contained in single executable `.py` file. It is short and portable
 as the Python itself.
 
 ``` python3
 import neatest
-neatest.run(tests_require=['requests'],
-            buffer=True,
-            verbosity=neatest.Verbosity.verbose)
+neatest.run(tests_require=['requests', 'lxml'],
+            warnings=neatest.Warnings.fail)
 ```
 
-# Arguments
 
-Most of the arguments to the `neatest.run(...)` method have the same names and
-meanings as the arguments
-of [unittest](https://docs.python.org/3/library/unittest.html#command-line-interface)
-and [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery)
-.
 
 # Test discovery
-
-The test discovery has different defaults than the
-standard [unittest discover](https://docs.python.org/3/library/unittest.html#test-discovery)
-. It may discover more `TestCase`s than the standard. 
 
 ## Filenames
 
@@ -106,8 +137,8 @@ $ python3 -m unittest discover -p "*.py"
 
 ## Directories
 
-`neatest` assumes, that the current directory is the project directory. It
-is the base directory for all imports.
+`neatest` assumes, that the current directory is the project directory. It is
+the base directory for all imports.
 
 If the `start_directory` are not specified, `neatest` will find all the packages
 inside the project directory and will run tests for each of them.
@@ -143,14 +174,4 @@ $ cd my_project
 $ python3 -m unittest discover -t . -s package_a -p "*.py"
 $ python3 -m unittest discover -t . -s package_b -p "*.py"
 $ python3 -m unittest discover -t . -s package_c -p "*.py"
-```
-
-For simple project structure it will work as well:
-
-```
-my_project
-    __init__.py
-    test_a.py       # tests from here will be discovered
-    test_b.py       # tests from here will be discovered
-    anything.py     # tests from here will be discovered
 ```
