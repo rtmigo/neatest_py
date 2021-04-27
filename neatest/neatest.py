@@ -216,7 +216,7 @@ def run(
                     start_dir=sd,
                     pattern=pattern)
                 print(
-                    f'Module "{rel_to_top(Path(sd))}" contains '
+                    f'Package "{rel_to_top(Path(sd))}" contains '
                     f'{suite.countTestCases()} tests')
                 if suite.countTestCases() > 0:
                     suites.append(suite)

@@ -23,9 +23,9 @@ $ neatest
 ```
 
 ```
-Module "package_a" contains 3 tests
-Module "package_b" contains 4 tests
-Module "tests" contains 16 tests
+Package "package_a" contains 3 tests
+Package "package_b" contains 4 tests
+Package "tests" contains 16 tests
 .....
 ----------------------------------------------------------------------
 Ran 23 tests in 2.947s
@@ -114,18 +114,18 @@ inside the project directory and will run tests for each of them.
 
 ```
 my_project
-  package_a              # tests in package_a will be discovered
-    __init__.py
-  package_b              # tests in package_b will be discovered
-    __init__.py
-  package_c              # tests in package_c will be discovered
-    __init__.py
-    subpackage           # subpackage is a part of package_c 
-      __init__.py        # so tests will be discovered
-      ...
-  subdir                # subdir is not a package
-      package_d         # tests in package_d will NOT be discovered  
-        __init__.py     # because it is not importable    
+    package_a               # tests in package_a will be discovered
+        __init__.py
+    package_b               # tests in package_b will be discovered
+        __init__.py
+    package_c               # tests in package_c will be discovered
+        __init__.py
+        subpackage          # subpackage is a part of package_c 
+            __init__.py     # so tests will be discovered
+            ...
+    subdir                  # subdir is not a package
+        package_d           # tests in package_d will NOT be discovered  
+            __init__.py     # because it is not importable    
   setup.py
 ```
 
@@ -150,7 +150,7 @@ For simple project structure it will work as well:
 ```
 my_project
     __init__.py
-    test_a.py       # we will run tests declared here
-    test_b.py       # we will run tests declared here
-    anything.py     # we will run tests declared here
+    test_a.py       # tests from here will be discovered
+    test_b.py       # tests from here will be discovered
+    anything.py     # tests from here will be discovered
 ```
