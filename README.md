@@ -120,7 +120,7 @@ $ python3 path/to/run_tests.py
 ```
 
 The idea is to use single `.py` script to run the tests (instead of `.sh`, `.bat` or `.cfg`). 
-Python script is readable, and it's portable as the Python itself.
+Python scripts are readable, and they are portable as the Python itself.
 
 You can specify all the options available to `neatest` command-line tool as 
 arguments to `neatest.run` method:

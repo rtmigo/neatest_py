@@ -18,11 +18,10 @@ setup(
     author_email="ortemeo@gmail.com",
     url='https://github.com/rtmigo/neatest_py#neatest',
 
-    packages=find_packages(),
+    packages=['neatest'],
     install_requires=[],
 
-    description='Runs tests with standard Python "unittest" module, '
-                'but with modified discovery rules',
+    description='An easy-to-configure unittest discovery',
 
     long_description=readme,
     long_description_content_type='text/markdown',
