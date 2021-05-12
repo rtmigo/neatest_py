@@ -18,7 +18,7 @@ setup(
     author_email="ortemeo@gmail.com",
     url='https://github.com/rtmigo/neatest_py#neatest',
 
-    packages=find_packages(),
+    packages=['neatest'],
     install_requires=[],
 
     description='Runs tests with standard Python "unittest" module, '
