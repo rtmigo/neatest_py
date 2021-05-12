@@ -96,17 +96,16 @@ class TestsProcess(unittest.TestCase):
         self.assertFalse(_pip_is_installed('requests'))
 
         c = _run(["-r", "requests", "-r", "beautifulsoup4"],
-             cwd=sample_project_path('flat'))
+                 cwd=sample_project_path('flat'))
         self.assertEqual(c.returncode, 0)
         self.assertTrue(_pip_is_installed('beautifulsoup4'))
         self.assertTrue(_pip_is_installed('requests'))
 
         c = _run(["-r", "requests", "-r", "beautifulsoup4"],
-             cwd=sample_project_path('flat'))
+                 cwd=sample_project_path('flat'))
         self.assertEqual(c.returncode, 0)
         self.assertTrue(_pip_is_installed('beautifulsoup4'))
         self.assertTrue(_pip_is_installed('requests'))
-
 
 
 class TestMyTest(unittest.TestCase):
@@ -116,11 +115,16 @@ class TestMyTest(unittest.TestCase):
             start = sample_project_path(s)
             return [p.name for p in neatest.neatest.find_start_dirs(start)]
 
-        self.assertEqual(names('a_b'), ['a', 'b'])
-        self.assertEqual(names('b_in_a'), ['a'])
-        self.assertEqual(names('only_c'), ['c'])
-        self.assertEqual(names('flat'), ['flat'])
-        self.assertEqual(names('with_invisible'), ['find_me'])
+        def unorderedEqual(lst1: List, lst2: List):
+            self.assertEqual(len(lst1), len(lst2))
+            # unordered
+            self.assertSetEqual(set(lst1), set(lst2))
+
+        unorderedEqual(names('a_b'), ['a', 'b'])
+        unorderedEqual(names('b_in_a'), ['a'])
+        unorderedEqual(names('only_c'), ['c'])
+        unorderedEqual(names('flat'), ['flat'])
+        unorderedEqual(names('with_invisible'), ['find_me'])
 
         with self.assertRaises(ModulesNotFoundError):
             names('complicated')

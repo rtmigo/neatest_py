@@ -21,8 +21,7 @@ setup(
     packages=['neatest'],
     install_requires=[],
 
-    description='Runs tests with standard Python "unittest" module, '
-                'but with modified discovery rules',
+    description='An easy-to-configure unittest discovery',
 
     long_description=readme,
     long_description_content_type='text/markdown',
