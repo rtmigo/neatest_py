@@ -1,11 +1,19 @@
-# [neatest](https://github.com/rtmigo/neatest_py)
+# [neatest](https://github.com/rtmigo/neatest_py#readme)
 
-Runs unit tests with standard Python `unittest` module.
+Easy-to-use unit test runner. 
+- Simplifies discovery of `unittest.TestCase` tests in the project 
+- Runs tests with standard `unittest`
+- Testing can be started from the shell with a single-word command: `neatest`
+- Testing can be customized by python scripts calling `neatest.run(...)`
 
-Automates test discovery.
+`neatest` can replace many runs of `python -m unittest discover ...` command.
+The priority for `neatest` is full compatibility and interchangeability with 
+the standard `unittest`. Tests that can be run from `neatest` can also 
+be run with `unittest` without any project modification.
 
-Can be conveniently invoked from Python code as `neatest.run(...)` method
-instead of running `python -m unittest discover ...` in shell.
+--------------------------------------------------------------------------------
+
+Supports Python 3.7+ on Linux, macOS and Windows.
 
 # Install
 
@@ -150,7 +158,7 @@ $ neatest -r requests -r lxml
 This is the equivalent of the deprecated argument `tests_require`
 from `setuptools.setup`.
 
-# warnings
+## warnings
 
 By default, warnings caught during testing are printed to the stdout.
 
@@ -164,8 +172,6 @@ neatest.run(warnings=neatest.Warnings.ignore)
 ``` bash
 $ neatest --warnings ignore
 ```
-
-
 
 ### warnings: fail
 
