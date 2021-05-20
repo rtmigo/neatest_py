@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
         python-version: [ 3.7, 3.9 ]
 
     steps:
@@ -34,7 +34,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install flake8
           pip install -e .
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
@@ -46,7 +46,7 @@ jobs:
           python3 -m unittest discover -t . -s tests
       - name: Run pkg tests
         run: |
-          ./test_pkg.sh
+          python ./test_pkg.py
 
   to-staging:
     needs: test
