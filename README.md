@@ -1,10 +1,15 @@
 # [neatest](https://github.com/rtmigo/neatest_py#readme)
 
-Simplifies test discovery. Runs tests with standard `unittest` 
-module. 
+Easy-to-use test runner. 
+- Simplifies discovery of `unittest.TestCase` tests in the project 
+- Runs tests with standard `unittest`
+- Can be started from the shell with a single-word command: `neatest`
+- Tests can be customized by python scripts calling `neatest.run(...)`
 
-Can be invoked from Python code as `neatest.run(...)` method
-instead of running `python -m unittest discover ...` in shell.
+`neatest` can replace many runs of `python -m unittest discover ...` command.
+The priority for `neatest` is full compatibility and interchangeability with 
+the standard `unittest`. Tests that can be run from `neatest` can also 
+be run with `unittest` without any project modification.
 
 --------------------------------------------------------------------------------
 

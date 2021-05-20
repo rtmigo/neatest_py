@@ -3,16 +3,29 @@
 
 
 from pathlib import Path
+from typing import Any, Dict
 
-from setuptools import setup, find_packages
-import neatest.constants
+from setuptools import setup
+
+
+def load_module_dict(filename: str) -> Dict[str, Any]:
+    import importlib.util as ilu
+    filename = str(Path(__file__).parent / filename)
+    spec = ilu.spec_from_file_location('', filename)
+    module = ilu.module_from_spec(spec)
+    # noinspection Mypy
+    spec.loader.exec_module(module)
+    return module.__dict__
+
 
 readme = (Path(__file__).parent / 'README.md').read_text()
+name = "neatest"
+constants = load_module_dict(f'{name}/_constants.py')
 
 setup(
-    name="neatest",
+    name=name,
 
-    version=neatest.constants.__version__,
+    version=constants['__version__'],
 
     author="Artёm IG",
     author_email="ortemeo@gmail.com",
@@ -34,16 +47,17 @@ setup(
             'neatest = neatest:main_entry_point',
         ]},
 
-    keywords="""unit tests unittest unit-tests testing discovery test ci""".split(),
+    keywords="""unit tests unittest unit-tests 
+                testing discovery test ci""".split(),
 
     # https://pypi.org/classifiers/
     classifiers=[
         # "Development Status :: 3 - Alpha",
-        "Development Status :: 4 - Beta",
+        # "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         'License :: OSI Approved :: MIT License',
         'Topic :: Software Development :: Testing',
-        'Topic :: Software Development :: Testing',
+        'Topic :: Software Development :: Testing :: Unit',
         'Topic :: Software Development :: Quality Assurance',
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
