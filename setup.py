@@ -34,7 +34,7 @@ setup(
             'neatest = neatest:main_entry_point',
         ]},
 
-    keywords="""unit tests unittest unit-tests testing discovery""".split(),
+    keywords="""unit tests unittest unit-tests testing discovery test ci""".split(),
 
     # https://pypi.org/classifiers/
     classifiers=[
@@ -49,6 +49,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Operating System :: POSIX",
+        'Operating System :: Microsoft :: Windows'
     ],
 
 )
