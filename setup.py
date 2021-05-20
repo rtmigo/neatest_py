@@ -20,6 +20,7 @@ setup(
 
     packages=['neatest'],
     install_requires=[],
+    python_requires='>=3.7',
 
     description='An easy-to-configure unittest discovery',
 
@@ -37,8 +38,8 @@ setup(
 
     # https://pypi.org/classifiers/
     classifiers=[
-        "Development Status :: 3 - Alpha",
-        # "Development Status :: 4 - Beta",
+        # "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         'License :: OSI Approved :: MIT License',
         'Topic :: Software Development :: Testing',
@@ -49,6 +50,5 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Operating System :: POSIX",
     ],
-
 
 )
