@@ -5,12 +5,21 @@
 from pathlib import Path
 from typing import Any, Dict
 
+# noinspection Mypy
 from setuptools import setup
 
 
-def load_module_dict(filename: str) -> Dict[str, Any]:
+def load_constants(pattern='*/_constants.py') -> Dict[str, Any]:
+    """Finds in the parent dir a single file by the pattern and imports module
+    from it. Returns the dictionary of globals defined in the module."""
     import importlib.util as ilu
-    filename = str(Path(__file__).parent / filename)
+
+    # finding the _constants.py (or anything defined by the pattern)
+    candidates = list(Path(__file__).parent.glob(pattern))
+    assert len(candidates) == 1, f"Candidates: {candidates}"
+    filename = candidates[0]
+
+    # importing module from `filename`
     spec = ilu.spec_from_file_location('', filename)
     module = ilu.module_from_spec(spec)
     # noinspection Mypy
@@ -20,7 +29,7 @@ def load_module_dict(filename: str) -> Dict[str, Any]:
 
 readme = (Path(__file__).parent / 'README.md').read_text()
 name = "neatest"
-constants = load_module_dict(f'{name}/_constants.py')
+constants = load_constants()
 
 setup(
     name=name,
@@ -31,7 +40,7 @@ setup(
     author_email="ortemeo@gmail.com",
     url='https://github.com/rtmigo/neatest_py#neatest',
 
-    packages=['neatest'],
+    packages=[name],
     install_requires=[],
     python_requires='>=3.7',
 
