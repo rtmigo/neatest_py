@@ -262,6 +262,7 @@ def run(
                                             line=w.line))
 
             if json:
+                assert temp_mute is not None
                 temp_mute.unmute()
 
                 print(dumps({
