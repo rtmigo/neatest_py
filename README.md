@@ -158,7 +158,7 @@ $ neatest -r requests -r lxml
 This is the equivalent of the deprecated argument `tests_require`
 from `setuptools.setup`.
 
-# warnings
+## warnings
 
 By default, warnings caught during testing are printed to the stdout.
 
@@ -172,8 +172,6 @@ neatest.run(warnings=neatest.Warnings.ignore)
 ``` bash
 $ neatest --warnings ignore
 ```
-
-
 
 ### warnings: fail
 
