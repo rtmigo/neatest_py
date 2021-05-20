@@ -1,11 +1,14 @@
 # [neatest](https://github.com/rtmigo/neatest_py)
 
-Runs unit tests with standard Python `unittest` module.
+Simplifies test discovery and then runs unit tests with standard Python `unittest` 
+module. 
 
-Automates test discovery.
-
-Can be conveniently invoked from Python code as `neatest.run(...)` method
+Can be invoked from Python code as `neatest.run(...)` method
 instead of running `python -m unittest discover ...` in shell.
+
+--------------------------------------------------------------------------------
+
+Supports Python 3.7+ on Linux, macOS and Windows.
 
 # Install
 

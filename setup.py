@@ -20,6 +20,7 @@ setup(
 
     packages=['neatest'],
     install_requires=[],
+    python_requires='>=3.7',
 
     description='An easy-to-configure unittest discovery',
 
@@ -33,12 +34,12 @@ setup(
             'neatest = neatest:main_entry_point',
         ]},
 
-    keywords="""unit tests unittest unit-tests testing discovery""".split(),
+    keywords="""unit tests unittest unit-tests testing discovery test ci""".split(),
 
     # https://pypi.org/classifiers/
     classifiers=[
-        "Development Status :: 3 - Alpha",
-        # "Development Status :: 4 - Beta",
+        # "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         'License :: OSI Approved :: MIT License',
         'Topic :: Software Development :: Testing',
@@ -48,7 +49,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Operating System :: POSIX",
+        'Operating System :: Microsoft :: Windows'
     ],
-
 
 )
