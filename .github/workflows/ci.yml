@@ -43,7 +43,8 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Run unit tests
         run: |
-          python3 -m unittest discover -t . -s tests
+          python ./test_unit.py
+          #python3 -m unittest discover -t . -s tests
       - name: Run pkg tests
         run: |
           python ./test_pkg.py
