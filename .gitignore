@@ -1,4 +1,6 @@
-_CHANGELOG.md
+CHANGELOG.md
+labuda/
+/labuda/
 
 # Editors
 .vscode/
@@ -125,3 +127,4 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+

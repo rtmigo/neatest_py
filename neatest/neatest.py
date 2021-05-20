@@ -2,17 +2,18 @@
 # SPDX-License-Identifier: MIT
 
 import argparse
-from json import dumps
-import subprocess
 import io
+import subprocess
 import sys
-from enum import Enum, IntEnum
-from typing import List, Optional, Union, Tuple, NamedTuple
 import unittest
-from pathlib import Path
-import neatest.constants
-from unittest import TextTestRunner, TestSuite, TestLoader, TestResult
 import warnings as wrn
+from enum import Enum, IntEnum
+from json import dumps
+from pathlib import Path
+from typing import List, Optional, Union, NamedTuple
+from unittest import TextTestRunner, TestSuite, TestLoader, TestResult
+
+import neatest._constants
 
 
 class NeatestError(Exception):
@@ -297,8 +298,8 @@ def run(
 
 
 def print_version():
-    print(f'neatest {neatest.constants.__version__}')
-    print(f'{neatest.constants.__copyright__}')
+    print(f'neatest {neatest._constants.__version__}')
+    print(f'{neatest._constants.__copyright__}')
 
 
 class FromUnittestMain:
@@ -362,9 +363,7 @@ def main_entry_point():
     parser.add_argument('--version',
                         action='store_true',
                         default=False,
-                        help="Show version info and exit"
-                        # help='Print only brief statistics in JSON format'
-                        )
+                        help="Show version info and exit")
 
     # parser.add_argument('-k', dest='testNamePatterns',
     #                     action='append',
