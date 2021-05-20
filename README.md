@@ -1,6 +1,6 @@
 # [neatest](https://github.com/rtmigo/neatest_py#readme)
 
-Easy-to-use test runner. 
+Easy-to-use unit test runner. 
 - Simplifies discovery of `unittest.TestCase` tests in the project 
 - Runs tests with standard `unittest`
 - Testing can be started from the shell with a single-word command: `neatest`
