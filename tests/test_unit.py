@@ -6,7 +6,7 @@ from typing import List, Optional
 import json
 
 import neatest
-from neatest.neatest import ModulesNotFoundError
+from neatest._neatest import ModulesNotFoundError
 
 
 def _pip_uninstall(package: str):
@@ -113,7 +113,7 @@ class TestMyTest(unittest.TestCase):
     def test_find_start_dirs(self):
         def names(s):
             start = sample_project_path(s)
-            return [p.name for p in neatest.neatest.find_start_dirs(start)]
+            return [p.name for p in neatest._neatest.find_start_dirs(start)]
 
         def unorderedEqual(lst1: List, lst2: List):
             self.assertEqual(len(lst1), len(lst2))

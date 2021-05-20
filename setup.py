@@ -35,7 +35,7 @@ setup(
     install_requires=[],
     python_requires='>=3.7',
 
-    description='An easy-to-configure unittest discovery',
+    description='Discovers and runs unit tests with a single-word command.',
 
     long_description=readme,
     long_description_content_type='text/markdown',
