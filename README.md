@@ -1,6 +1,6 @@
-# [neatest](https://github.com/rtmigo/neatest_py)
+# [neatest](https://github.com/rtmigo/neatest_py#readme)
 
-Simplifies test discovery and then runs unit tests with standard Python `unittest` 
+Simplifies test discovery. Runs tests with standard `unittest` 
 module. 
 
 Can be invoked from Python code as `neatest.run(...)` method
