@@ -1,3 +1,7 @@
+# 3.8
+
+- `neatest` now exports `Warnings` and `RunResult` 
+
 # 3.7
 
 - changelog added
