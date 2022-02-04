@@ -118,7 +118,7 @@ def set_warnings_filter(w: PythonWarningsArgs):
     # Comments are preserved
     if w is not None:
         # if self.warnings is set, use it to filter all the warnings
-        wrn.simplefilter(w.value)
+        wrn.simplefilter(w.value)  # type: ignore
         # if the filter is 'default' or 'always', special-case the
         # warnings from the deprecated unittest methods to show them
         # no more than once per module, because they can be fairly
