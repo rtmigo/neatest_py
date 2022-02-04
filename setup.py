@@ -63,6 +63,7 @@ setup(
     classifiers=[
         # "Development Status :: 3 - Alpha",
         # "Development Status :: 4 - Beta",
+        'Development Status :: 2 - Pre-Alpha',
         "Intended Audience :: Developers",
         'License :: OSI Approved :: MIT License',
         'Topic :: Software Development :: Testing',
@@ -71,6 +72,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Operating System :: POSIX",
         'Operating System :: Microsoft :: Windows'
     ],
