@@ -118,7 +118,7 @@ def set_warnings_filter(w: PythonWarningsArgs):
     # Comments are preserved
     if w is not None:
         # if self.warnings is set, use it to filter all the warnings
-        wrn.simplefilter(w.value)
+        wrn.simplefilter(w.value)  # type: ignore
         # if the filter is 'default' or 'always', special-case the
         # warnings from the deprecated unittest methods to show them
         # no more than once per module, because they can be fairly
@@ -146,6 +146,15 @@ class TempMute:
             self.old_stderr = None
 
 
+def _remove_those_contain(
+        strings: List[str],
+        bad_substrings: Optional[List[str]]) -> List[str]:
+    if bad_substrings is None:
+        return strings
+    return [item for item in strings
+            if not any(bad in item for bad in bad_substrings)]
+
+
 def run(
         tests_require: Optional[List[str]] = None,
         start_directory: Optional[
@@ -155,6 +164,7 @@ def run(
         verbosity=default_verbosity,
         exit_if_failed=True,
         warnings: Warnings = default_warnings_handling,
+        ignore_warnings: List[str] = None,
         json=False,
 ) -> RunResult:
     """Discovers and runs unit tests for module or modules.
@@ -181,6 +191,10 @@ def run(
     failfast: Stop on first fail or error.
 
     verbosity: 0 for quiet, 2 for verbose.
+
+    ignore_warnings: Allows you to hide individual warnings. If any of the
+    listed strings is found in the warning message, the message will not
+    be displayed.
     """
 
     top_level_directory = default_top_level_dir
@@ -249,17 +263,24 @@ def run(
 
                 caught_warnings = list(catcher)
 
-            if caught_warnings:
+            formatted_warnings = [
+                wrn.formatwarning(message=w.message,
+                                  category=w.category,
+                                  filename=w.filename,
+                                  lineno=w.lineno,
+                                  line=w.line)
+                for w in caught_warnings]
+
+            formatted_warnings = _remove_those_contain(formatted_warnings,
+                                                       ignore_warnings)
+
+            if formatted_warnings:
                 print()
                 print(splitter)
                 print(f"Caught {len(caught_warnings)} warnings:")
-                for w in caught_warnings:
+                for w in formatted_warnings:
                     print()
-                    print(wrn.formatwarning(message=w.message,
-                                            category=w.category,
-                                            filename=w.filename,
-                                            lineno=w.lineno,
-                                            line=w.line))
+                    print(w)
 
             if json:
                 assert temp_mute is not None
